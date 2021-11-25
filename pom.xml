@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.kronen</groupId>
+        <artifactId>cellardoor-bom</artifactId>
+        <version>0.0.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.kronen.github</groupId>
+    <artifactId>cellardoor-allocation</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>cellardoor-allocation</name>
+    <description>Allocation Microservice for Cellardoor project</description>
+
+    <properties>
+    </properties>
+
+    <dependencies>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+        </plugins>
+    </build>
+
+</project>
