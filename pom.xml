@@ -1,30 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.github.kronen</groupId>
-        <artifactId>cellardoor-bom</artifactId>
-        <version>0.0.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>com.kronen.github</groupId>
-    <artifactId>cellardoor-allocation</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>cellardoor-allocation</name>
-    <description>Allocation Microservice for Cellardoor project</description>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.github.kronen</groupId>
+    <artifactId>cellardoor-bom</artifactId>
+    <version>0.2.0</version>
+    <relativePath/>
+  </parent>
 
-    <properties>
-    </properties>
+  <artifactId>cellardoor-allocation</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>cellardoor-allocation</name>
+  <description>Allocation Microservice for Cellardoor project</description>
 
-    <dependencies>
+  <properties>
+    <openapi-generator.version>7.0.1</openapi-generator.version>
+  </properties>
 
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+    </dependency>
 
-    <build>
-        <plugins>
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+    </dependency>
 
-        </plugins>
-    </build>
+    <!-- Testing -->
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+      <version>1.19.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.instancio</groupId>
+      <artifactId>instancio-junit</artifactId>
+    </dependency>
+
+    <!-- Local Development -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>
+                ${project.basedir}/src/main/resources/openapi.yaml
+              </inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>com.github.kronen.cellardoor.api</apiPackage>
+              <modelPackage>com.github.kronen.cellardoor.model</modelPackage>
+              <invokerPackage>com.github.kronen.cellardoor.invoker</invokerPackage>
+              <configOptions>
+                <groupId>com.github.kronen</groupId>
+                <artifactId>cellardoor-allocation</artifactId>
+                <openApiNullable>false</openApiNullable>
+                <performBeanValidation>true</performBeanValidation>
+                <library>spring-boot</library>
+                <useSpringBoot3>true</useSpringBoot3>
+                <reactive>true</reactive>
+                <interfaceOnly>true</interfaceOnly>
+                <dateLibrary>java8</dateLibrary>
+                <useSpringController>false</useSpringController>
+                <documentationProvider>springdoc</documentationProvider>
+                <skipDefaultInterface>true</skipDefaultInterface>
+                <modelNameSuffix>DTO</modelNameSuffix>
+              </configOptions>
+              <schemaMappings>
+                Batch=com.github.kronen.cellardoor.domain.allocation.Batch,OrderLine=com.github.kronen.cellardoor.domain.allocation.OrderLine
+              </schemaMappings>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
