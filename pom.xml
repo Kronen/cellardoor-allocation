@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.github.kronen</groupId>
-        <artifactId>cellardoor-bom</artifactId>
-        <version>0.0.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>com.kronen.github</groupId>
-    <artifactId>cellardoor-allocation</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>cellardoor-allocation</name>
-    <description>Allocation Microservice for Cellardoor project</description>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.github.kronen</groupId>
+    <artifactId>cellardoor-bom</artifactId>
+    <version>0.3.3</version>
+    <relativePath/>
+  </parent>
 
-    <properties>
-    </properties>
+  <artifactId>cellardoor-allocation</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>cellardoor-allocation</name>
+  <description>Allocation Microservice for Cellardoor project</description>
 
+  <modules>
+    <module>boot</module>
+    <module>api-rest</module>
+    <module>infrastructure</module>
+    <module>domain</module>
+    <module>application</module>
+  </modules>
+
+  <properties>
+    <openapi-generator.version>7.0.1</openapi-generator.version>
+    <mongodb-test-containers.version>1.19.1</mongodb-test-containers.version>
+  </properties>
+
+  <dependencyManagement>
     <dependencies>
-
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>mongodb</artifactId>
+        <version>${mongodb-test-containers.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-
-        </plugins>
-    </build>
+  </dependencyManagement>
 
 </project>
