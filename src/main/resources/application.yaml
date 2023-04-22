@@ -1,0 +1,10 @@
+spring:
+  data:
+    r2dbc:
+      url: r2dbc:postgresql://localhost:5432/postgres?schema=techwriting;
+      username: cellardoor
+      password: cellardoor
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: cellardoor-allocation-db
