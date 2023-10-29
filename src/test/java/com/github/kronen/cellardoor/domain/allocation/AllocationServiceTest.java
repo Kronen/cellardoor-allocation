@@ -1,44 +1,24 @@
 package com.github.kronen.cellardoor.domain.allocation;
 
 import com.github.kronen.cellardoor.common.exceptions.OutOfStock;
-import com.github.kronen.cellardoor.system.database.orderline.OrderLineEntity;
-import com.github.kronen.cellardoor.system.database.orderline.OrderLineMapper;
-import com.github.kronen.cellardoor.system.database.orderline.OrderLineMapperImpl;
-import com.github.kronen.cellardoor.system.database.orderline.OrderLineRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Slf4j
 @ActiveProfiles("test")
-@SpringBootTest
 @Import(DomainAllocationService.class)
-public class AllocationTest {
+public class AllocationServiceTest {
 
-    @Autowired
-    OrderLineRepository orderLineRepository;
-
-    @Autowired
-    AllocationService allocationService;
-
-    OrderLineMapper orderLineMapper = new OrderLineMapperImpl();
+    AllocationService allocationService = new DomainAllocationService();
 
     private Pair<Batch, OrderLine> makeBatchAndLine(String sku, Integer batchQty, Integer lineQty) {
         Batch batch = Batch.builder().reference("batch-001").sku(sku).purchasedQuantity(batchQty)
@@ -119,7 +99,7 @@ public class AllocationTest {
     }
 
     @Test
-    public void testPrefersWarehouseBatchesToShipments() throws OutOfStock {
+    public void testPrefersWarehouseBatchesToShipments() {
         Batch warehouseBatch = Batch.builder().reference("warehouse-batch1").sku("RETRO-CLOCK").purchasedQuantity(100)
                 .build();
 
@@ -128,14 +108,15 @@ public class AllocationTest {
 
         OrderLine line = OrderLine.builder().orderId("oref").sku("RETRO-CLOCK").quantity(10).build();
 
-        String reference = allocationService.allocate(line, Arrays.asList(warehouseBatch, shipmentBatch)).block();
+        StepVerifier.create(allocationService.allocate(line, Flux.just(warehouseBatch, shipmentBatch)))
+                .expectNext(warehouseBatch.getReference()).verifyComplete();
 
         assertThat(warehouseBatch.availableQuantity()).isEqualTo(90);
         assertThat(shipmentBatch.availableQuantity()).isEqualTo(100);
     }
 
     @Test
-    public void testPrefersEarlierBatches() throws OutOfStock {
+    public void testPrefersEarlierBatches() {
         Batch earliestBatch = Batch.builder().reference("warehouse-batch").sku("MINIMALIST-SPOON")
                 .purchasedQuantity(100).eta(OffsetDateTime.now(ZoneOffset.UTC)).build();
         Batch mediumBatch = Batch.builder().reference("warehouse-batch").sku("MINIMALIST-SPOON").purchasedQuantity(100)
@@ -144,7 +125,8 @@ public class AllocationTest {
                 .eta(OffsetDateTime.now(ZoneOffset.UTC).plusDays(10)).build();
         OrderLine line = OrderLine.builder().orderId("order1").sku("MINIMALIST-SPOON").quantity(10).build();
 
-        allocationService.allocate(line, Arrays.asList(mediumBatch, earliestBatch, latestBatch));
+        StepVerifier.create(allocationService.allocate(line, Flux.just(mediumBatch, earliestBatch, latestBatch)))
+                .expectNext(earliestBatch.getReference()).verifyComplete();
 
         assertThat(earliestBatch.availableQuantity()).isEqualTo(90);
         assertThat(mediumBatch.availableQuantity()).isEqualTo(100);
@@ -152,65 +134,28 @@ public class AllocationTest {
     }
 
     @Test
-    public void testReturnsAllocatedBatchRef() throws OutOfStock {
+    public void testReturnsAllocatedBatchRef() {
         Batch warehouseBatch = Batch.builder().reference("warehouse-batch").sku("HIGHBROW-POSTER")
                 .purchasedQuantity(100).build();
-
         Batch shipmentBatch = Batch.builder().reference("warehouse-batch").sku("HIGHBROW-POSTER").purchasedQuantity(100)
                 .build();
+        OrderLine line = OrderLine.builder().orderId("ord-ref").sku("HIGHBROW-POSTER").quantity(10).build();
 
-        OrderLine line = OrderLine.builder().orderId("oref").sku("HIGHBROW-POSTER").quantity(10).build();
-
-        String reference = allocationService.allocate(line, Arrays.asList(warehouseBatch, shipmentBatch)).block();
-        assertThat(reference).isEqualTo(warehouseBatch.getReference());
+        StepVerifier.create(allocationService.allocate(line, Flux.just(warehouseBatch, shipmentBatch)))
+                .expectNext(warehouseBatch.getReference()).verifyComplete();
     }
 
     @Test
-    public void testRaisesOutOfStockExceptionIfCaannotAllocate() throws OutOfStock {
+    public void testRaisesOutOfStockExceptionIfCannotAllocate() {
         Batch batch = Batch.builder().reference("batch1").sku("SMALL-FORK").purchasedQuantity(10)
                 .eta(OffsetDateTime.now()).build();
-        OrderLine line = OrderLine.builder().orderId("order1").sku("SMALL-FORK").quantity(10).build();
+        OrderLine line1 = OrderLine.builder().orderId("order1").sku("SMALL-FORK").quantity(10).build();
+        OrderLine line2 = OrderLine.builder().orderId("order2").sku("SMALL-FORK").quantity(1).build();
 
-        List<Batch> batches = Arrays.asList(batch);
-        allocationService.allocate(line, batches);
+        Flux<Batch> batches = Flux.just(batch);
+        allocationService.allocate(line1, batches).block();
 
-        assertThrows(OutOfStock.class, () -> {
-            allocationService.allocate(new OrderLine("order2", "SMALL-FORK", 1), batches);
-        });
-    }
-
-    @Nested
-    class AllocationDatabaseTest {
-
-        private void insertOrderLines() {
-            Flux<OrderLineEntity> orderLineFlux = Flux.just(
-                    OrderLineEntity.builder().orderId("order1").sku("RED-CHAIR").quantity(12).build(),
-                    OrderLineEntity.builder().orderId("order2").sku("RED-TABLE").quantity(13).build(),
-                    OrderLineEntity.builder().orderId("order3").sku("BLUE-LIPSTICK").quantity(14).build());
-
-            orderLineRepository.saveAll(orderLineFlux).subscribe();
-        }
-
-        @Test
-        public void whenDeleteAll_then0IsExpected() {
-            orderLineRepository.deleteAll().as(StepVerifier::create).expectNextCount(0).verifyComplete();
-        }
-
-        @Test
-        public void whenInsert3_then3AreExpected() {
-            insertOrderLines();
-            orderLineRepository.findAll().as(StepVerifier::create).expectNextCount(3).verifyComplete();
-        }
-
-        @Test
-        public void testOrderLineRepositoryCanSaveLines() {
-            OrderLine orderLine = OrderLine.builder().orderId("order1").sku("RED-CHAIR").quantity(12).build();
-            Mono<OrderLineEntity> lineMono = orderLineRepository
-                    .save(orderLineMapper.orderLineToOrderLineEntity(orderLine));
-
-            StepVerifier.create(lineMono).assertNext(line -> assertThat(line.getId()).isNotNull()).verifyComplete();
-        }
-
+        StepVerifier.create(allocationService.allocate(line2, batches)).expectError(OutOfStock.class).verify();
     }
 
 }

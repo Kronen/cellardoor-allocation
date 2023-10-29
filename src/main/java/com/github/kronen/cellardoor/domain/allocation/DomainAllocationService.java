@@ -1,20 +1,24 @@
 package com.github.kronen.cellardoor.domain.allocation;
 
 import com.github.kronen.cellardoor.common.exceptions.OutOfStock;
+import java.util.function.Function;
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DomainAllocationService implements AllocationService {
 
-    public Mono<String> allocate(OrderLine line, List<Batch> batches) throws OutOfStock {
-        Optional<Batch> batch = batches.stream().sorted().filter(b -> b.canAllocate(line)).findFirst();
-        return batch.map(b -> {
-            b.allocate(line);
-            return Mono.just(b.getReference());
-        }).orElseThrow(() -> new OutOfStock(OutOfStock.NO_AVAILABLE_BATCH + line.getSku()));
+    private static Function<Batch, Mono<? extends @NonNull String>> allocateOrderLine(OrderLine line) {
+        return batch -> {
+            batch.allocate(line);
+            return Mono.just(batch.getReference());
+        };
+    }
+
+    public Mono<String> allocate(OrderLine line, Flux<Batch> batches) {
+        return batches.filter(b -> b.canAllocate(line)).sort().next().flatMap(allocateOrderLine(line)).switchIfEmpty(
+                Mono.defer(() -> Mono.error(new OutOfStock(OutOfStock.BATCH_UNAVAILABLE + line.getSku()))));
     }
 }

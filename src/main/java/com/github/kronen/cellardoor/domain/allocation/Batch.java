@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,16 +15,17 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Batch implements Comparable<Batch> {
 
-    @EqualsAndHashCode.Include
-    @NonNull
-    private String reference;
-    @NonNull
-    private String sku;
-
     @NonNull
     private final Integer purchasedQuantity;
 
     private final Set<OrderLine> allocations = new HashSet<>();
+
+    @NonNull
+    @EqualsAndHashCode.Include
+    private String reference;
+
+    @NonNull
+    private String sku;
 
     private OffsetDateTime eta;
 
@@ -49,13 +51,8 @@ public class Batch implements Comparable<Batch> {
         return sku.equals(line.getSku()) && availableQuantity() >= line.getQuantity();
     }
 
-    @Override
     public int compareTo(Batch o) {
-        if (o.eta == null) {
-            return 1;
-        } else if (this.eta == null) {
-            return -1;
-        }
-        return this.eta.isAfter(o.eta) ? 1 : this.eta.isEqual(o.eta) ? 0 : -1;
+        return Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo)).compare(this, o);
     }
+
 }
