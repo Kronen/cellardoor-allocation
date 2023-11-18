@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,10 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("orders")
 public class OrderDocument {
 
-    @Id
-    private ObjectId id;
+  @Id
+  private String id;
 
-    @Indexed(unique = true)
-    private String reference;
+  @Indexed(unique = true)
+  private String reference;
 
 }

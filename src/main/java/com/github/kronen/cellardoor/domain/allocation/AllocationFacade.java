@@ -11,18 +11,18 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AllocationFacade {
 
-    private final AllocationService allocationService;
+  private final AllocationService allocationService;
 
-    private final BatchRepository batchRepository;
+  private final BatchRepository batchRepository;
 
-    public Mono<String> allocate(Mono<AllocateRequest> allocateRequestMono) {
-        return allocateRequestMono.flatMap(
-                allocateRequest -> allocationService.allocate(allocateRequest.getOrderLine(), batchRepository.findAll())
-                        .onErrorResume(OutOfStock.class, ex -> Mono.empty()));
-    }
+  public Mono<String> allocate(Mono<AllocateRequest> allocateRequestMono) {
+    return allocateRequestMono.flatMap(
+      allocateRequest -> allocationService.allocate(allocateRequest.getOrderLine(), batchRepository.findAll())
+        .onErrorResume(OutOfStock.class, ex -> Mono.empty()));
+  }
 
-    public Mono<Batch> getBatch(String reference) {
-        return batchRepository.findById(reference);
-    }
+  public Mono<Batch> getBatch(String reference) {
+    return batchRepository.findByReference(reference);
+  }
 
 }

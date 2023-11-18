@@ -7,8 +7,8 @@ import org.mapstruct.Mapper;
 @Mapper(builder = @Builder(disableBuilder = true))
 public interface BatchMapper {
 
-    Batch toBatch(BatchDocument Batch);
+  Batch toBatch(BatchDocument Batch);
 
-    BatchDocument toBatchDocument(Batch Batch);
+  BatchDocument toBatchDocument(Batch Batch);
 
 }

@@ -11,48 +11,49 @@ import java.util.Set;
 @Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Batch implements Comparable<Batch> {
 
-    @NonNull
-    private final Integer purchasedQuantity;
+  @NonNull
+  @EqualsAndHashCode.Include
+  private String reference;
 
-    private final Set<OrderLine> allocations = new HashSet<>();
+  @NonNull
+  private Integer purchasedQuantity;
 
-    @NonNull
-    @EqualsAndHashCode.Include
-    private String reference;
+  @Builder.Default
+  private Set<OrderLine> allocations = new HashSet<>();
 
-    @NonNull
-    private String sku;
+  @NonNull
+  private String sku;
 
-    private OffsetDateTime eta;
+  private OffsetDateTime eta;
 
-    public void allocate(OrderLine line) {
-        if (canAllocate(line)) {
-            allocations.add(line);
-        }
+  public void allocate(OrderLine line) {
+    if(canAllocate(line)) {
+      allocations.add(line);
     }
+  }
 
-    public void deallocate(OrderLine line) {
-        allocations.remove(line);
-    }
+  public void deallocate(OrderLine line) {
+    allocations.remove(line);
+  }
 
-    public Integer allocatedQuantity() {
-        return this.allocations.stream().map(OrderLine::getQuantity).reduce(0, Integer::sum);
-    }
+  public Integer allocatedQuantity() {
+    return this.allocations.stream().map(OrderLine::getQuantity).reduce(0, Integer::sum);
+  }
 
-    public Integer availableQuantity() {
-        return purchasedQuantity - allocatedQuantity();
-    }
+  public Integer availableQuantity() {
+    return purchasedQuantity - allocatedQuantity();
+  }
 
-    public boolean canAllocate(OrderLine line) {
-        return sku.equals(line.getSku()) && availableQuantity() >= line.getQuantity();
-    }
+  public boolean canAllocate(OrderLine line) {
+    return sku.equals(line.getSku()) && availableQuantity() >= line.getQuantity();
+  }
 
-    public int compareTo(Batch o) {
-        return Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo)).compare(this, o);
-    }
+  public int compareTo(Batch o) {
+    return Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo)).compare(this, o);
+  }
 
 }

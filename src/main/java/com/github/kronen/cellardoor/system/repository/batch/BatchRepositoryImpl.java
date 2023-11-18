@@ -12,18 +12,31 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class BatchRepositoryImpl implements BatchRepository {
 
-    private final MongoBatchRepository repository;
+  private final MongoBatchRepository batchRepository;
 
-    private final BatchMapper mapper;
+  private final BatchMapper mapper;
 
-    @Override
-    public Flux<Batch> findAll() {
-        return repository.findAll().map(mapper::toBatch);
-    }
+  @Override
+  public Flux<Batch> findAll() {
+    return batchRepository.findAll()
+      .map(mapper::toBatch);
+  }
 
-    @Override
-    public Mono<Batch> findById(String batchReference) {
-        return repository.findByReference(batchReference).map(mapper::toBatch);
-    }
+  @Override
+  public Mono<Batch> findByReference(String batchReference) {
+    return batchRepository.findByReference(batchReference)
+      .map(mapper::toBatch);
+  }
+
+  @Override
+  public Mono<Batch> save(Batch batch) {
+    return batchRepository.save(mapper.toBatchDocument(batch))
+      .map(mapper::toBatch);
+  }
+
+  @Override
+  public Flux<Batch> saveAll(Flux<Batch> batches) {
+    return batchRepository.saveAll(batches.map(mapper::toBatchDocument)).map(mapper::toBatch);
+  }
 
 }
