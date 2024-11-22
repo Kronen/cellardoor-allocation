@@ -18,25 +18,21 @@ public class BatchRepositoryImpl implements BatchRepository {
 
   @Override
   public Flux<Batch> findAll() {
-    return batchRepository.findAll()
-      .map(mapper::toBatch);
+    return batchRepository.findAll().map(mapper::toBatch);
   }
 
   @Override
   public Mono<Batch> findByReference(String batchReference) {
-    return batchRepository.findByReference(batchReference)
-      .map(mapper::toBatch);
+    return batchRepository.findByReference(batchReference).map(mapper::toBatch);
   }
 
   @Override
   public Mono<Batch> save(Batch batch) {
-    return batchRepository.save(mapper.toBatchDocument(batch))
-      .map(mapper::toBatch);
+    return batchRepository.save(mapper.toBatchDocument(batch)).map(mapper::toBatch);
   }
 
   @Override
   public Flux<Batch> saveAll(Flux<Batch> batches) {
     return batchRepository.saveAll(batches.map(mapper::toBatchDocument)).map(mapper::toBatch);
   }
-
 }

@@ -10,5 +10,4 @@ public interface BatchMapper {
   Batch toBatch(BatchDocument Batch);
 
   BatchDocument toBatchDocument(Batch Batch);
-
 }

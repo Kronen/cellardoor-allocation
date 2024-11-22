@@ -8,5 +8,4 @@ import reactor.core.publisher.Mono;
 public interface MongoBatchRepository extends ReactiveMongoRepository<BatchDocument, String> {
 
   Mono<BatchDocument> findByReference(String batchReference);
-
 }

@@ -13,5 +13,4 @@ public interface BatchRepository {
   Mono<Batch> save(Batch batch);
 
   Flux<Batch> saveAll(Flux<Batch> batches);
-
 }

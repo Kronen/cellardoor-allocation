@@ -1,12 +1,11 @@
 package com.github.kronen.cellardoor.domain.allocation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.*;
 
 @Data
 @Builder
@@ -15,23 +14,18 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Batch implements Comparable<Batch> {
 
-  @NonNull
-  @EqualsAndHashCode.Include
-  private String reference;
+  @NonNull @EqualsAndHashCode.Include private String reference;
 
-  @NonNull
-  private Integer purchasedQuantity;
+  @NonNull private Integer purchasedQuantity;
 
-  @Builder.Default
-  private Set<OrderLine> allocations = new HashSet<>();
+  @Builder.Default private Set<OrderLine> allocations = new HashSet<>();
 
-  @NonNull
-  private String sku;
+  @NonNull private String sku;
 
   private OffsetDateTime eta;
 
   public void allocate(OrderLine line) {
-    if(canAllocate(line)) {
+    if (canAllocate(line)) {
       allocations.add(line);
     }
   }
@@ -53,7 +47,7 @@ public class Batch implements Comparable<Batch> {
   }
 
   public int compareTo(Batch o) {
-    return Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo)).compare(this, o);
+    return Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo))
+        .compare(this, o);
   }
-
 }

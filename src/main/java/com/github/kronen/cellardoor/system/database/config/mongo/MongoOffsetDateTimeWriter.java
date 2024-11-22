@@ -1,10 +1,9 @@
 package com.github.kronen.cellardoor.system.database.config.mongo;
 
-import org.bson.Document;
-import org.springframework.core.convert.converter.Converter;
-
 import java.time.OffsetDateTime;
 import java.util.Date;
+import org.bson.Document;
+import org.springframework.core.convert.converter.Converter;
 
 public class MongoOffsetDateTimeWriter implements Converter<OffsetDateTime, Document> {
 
@@ -19,5 +18,4 @@ public class MongoOffsetDateTimeWriter implements Converter<OffsetDateTime, Docu
     document.put(OFFSET_FIELD, offsetDateTime.getOffset().toString());
     return document;
   }
-
 }

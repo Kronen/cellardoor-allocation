@@ -17,12 +17,13 @@ public class AllocationFacade {
 
   public Mono<String> allocate(Mono<AllocateRequest> allocateRequestMono) {
     return allocateRequestMono.flatMap(
-      allocateRequest -> allocationService.allocate(allocateRequest.getOrderLine(), batchRepository.findAll())
-        .onErrorResume(OutOfStock.class, ex -> Mono.empty()));
+        allocateRequest ->
+            allocationService
+                .allocate(allocateRequest.getOrderLine(), batchRepository.findAll())
+                .onErrorResume(OutOfStock.class, ex -> Mono.empty()));
   }
 
   public Mono<Batch> getBatch(String reference) {
     return batchRepository.findByReference(reference);
   }
-
 }

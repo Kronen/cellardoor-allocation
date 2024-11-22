@@ -1,6 +1,8 @@
 package com.github.kronen.cellardoor.system.database.batch;
 
 import com.github.kronen.cellardoor.domain.allocation.OrderLine;
+import java.time.OffsetDateTime;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +11,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.OffsetDateTime;
-import java.util.Set;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,8 +18,7 @@ import java.util.Set;
 @Document("batches")
 public class BatchDocument {
 
-  @Id
-  private String reference;
+  @Id private String reference;
 
   private String sku;
 
@@ -30,5 +28,4 @@ public class BatchDocument {
   private OffsetDateTime eta;
 
   private Set<OrderLine> allocations;
-
 }

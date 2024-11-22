@@ -20,15 +20,16 @@ public class AllocationController implements AllocationApi {
   private final AllocationFacade allocationFacade;
 
   @Override
-  public Mono<ResponseEntity<String>> allocate(@Valid @RequestBody Mono<AllocateRequest> allocateRequest,
-                                               final ServerWebExchange exchange) {
-    return allocationFacade.allocate(allocateRequest).map(reference -> ResponseEntity.ok().body(reference));
+  public Mono<ResponseEntity<String>> allocate(
+      @Valid @RequestBody Mono<AllocateRequest> allocateRequest, final ServerWebExchange exchange) {
+    return allocationFacade
+        .allocate(allocateRequest)
+        .map(reference -> ResponseEntity.ok().body(reference));
   }
 
   @Override
-  public Mono<ResponseEntity<Batch>> getBatch(@PathVariable("batch_reference") String batchReference,
-                                              final ServerWebExchange exchange) {
+  public Mono<ResponseEntity<Batch>> getBatch(
+      @PathVariable("batch_reference") String batchReference, final ServerWebExchange exchange) {
     return allocationFacade.getBatch(batchReference).map(ResponseEntity::ok);
   }
-
 }

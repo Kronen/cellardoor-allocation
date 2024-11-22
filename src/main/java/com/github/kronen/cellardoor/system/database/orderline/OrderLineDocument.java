@@ -18,18 +18,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document("order_lines")
 public class OrderLineDocument {
 
-  @Id
-  private String id;
+  @Id private String id;
 
   private String sku;
 
-  @NotNull
-  private Integer quantity;
+  @NotNull private Integer quantity;
 
   @Field("order_id")
   private String orderId;
 
-  @DBRef
-  private BatchDocument batch;
-
+  @DBRef private BatchDocument batch;
 }
