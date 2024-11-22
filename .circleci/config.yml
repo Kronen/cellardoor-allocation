@@ -21,8 +21,8 @@ jobs:
 
       - run:
           name: Build
-          command: mvn -gs settings.xml -B -DskipTests clean package
+          command: mvn -s settings.xml -B -DskipTests clean package
 
       - run:
           name: Test
-          command: mvn test
+          command: mvn -s settings.xml test
