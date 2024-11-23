@@ -1,22 +1,27 @@
 version: 2.1
 
 workflows:
-  merge-to-master-verify:
+  pr-verify:
+    triggers:
+      - type: pull_requests
+        branches:
+          only:
+            - master
     jobs:
       - build-and-test
 jobs:
   build-and-test:
     docker:
-      - image: cimg/openjdk:23.0.1
+      - image: cimg/openjdk:21
 
     steps:
       - checkout
 
       - run:
           name: "Setup Environment Variables"
-          command: |            
-            echo 'export GIT_USER_ID="$GIT_USER_ID"' >> "$BASH_ENV"
-            echo 'export GIT_PERSONAL_ACCESS="$GIT_PERSONAL_ACCESS"' >> "$BASH_ENV"
+          command: |
+            echo 'export USERNAME="$GIT_USER_ID"' >> "$BASH_ENV"
+            echo 'export PASSWORD="$GIT_PERSONAL_ACCESS"' >> "$BASH_ENV"
             source "$BASH_ENV"
 
       - run:
