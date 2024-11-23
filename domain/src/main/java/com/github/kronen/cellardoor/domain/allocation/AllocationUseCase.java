@@ -19,12 +19,13 @@ public class AllocationUseCase {
 
   public Mono<String> allocate(Mono<AllocateRequest> allocateRequestMono) {
     return allocateRequestMono.flatMap(
-      allocateRequest -> allocationService.allocate(allocateRequest.getOrderLine(), batchPort.findAll())
-        .onErrorResume(OutOfStock.class, ex -> Mono.empty()));
+        allocateRequest ->
+            allocationService
+                .allocate(allocateRequest.getOrderLine(), batchPort.findAll())
+                .onErrorResume(OutOfStock.class, ex -> Mono.empty()));
   }
 
   public Mono<Batch> getBatch(String reference) {
     return batchPort.findByReference(reference);
   }
-
 }

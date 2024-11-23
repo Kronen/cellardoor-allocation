@@ -13,5 +13,4 @@ public interface OrderLineRepository {
   Mono<OrderLine> save(OrderLine orderLine);
 
   Mono<Void> deleteAll();
-
 }
