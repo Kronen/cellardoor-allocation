@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-public class AllocationController implements AllocationApi {
+public final class AllocationController implements AllocationApi {
 
     private final AllocationUseCase allocationUseCase;
 
@@ -26,15 +26,15 @@ public class AllocationController implements AllocationApi {
 
     @Override
     public Mono<ResponseEntity<String>> allocate(
-            @Valid @RequestBody Mono<AllocateRequestDTO> allocateRequestDTO, final ServerWebExchange exchange) {
+            @Valid @RequestBody final Mono<AllocateRequestDTO> allocateRequestDto, final ServerWebExchange exchange) {
         return allocationUseCase
-                .allocate(allocateRequestDTO.map(mapper::toDomain))
+                .allocate(allocateRequestDto.map(mapper::toDomain))
                 .map(reference -> ResponseEntity.ok().body(reference));
     }
 
     @Override
     public Mono<ResponseEntity<Batch>> getBatch(
-            @PathVariable("batch_reference") String batchReference, final ServerWebExchange exchange) {
+            @PathVariable("batch_reference") final String batchReference, final ServerWebExchange exchange) {
         return allocationUseCase.getBatch(batchReference).map(ResponseEntity::ok);
     }
 }
