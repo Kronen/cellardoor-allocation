@@ -5,8 +5,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.instancio.Select.field;
 
-import com.github.kronen.cellardoor.infraestructure.batch.entity.BatchDocument;
-import com.github.kronen.cellardoor.infraestructure.batch.repository.MongoBatchRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,38 +16,42 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.github.kronen.cellardoor.infraestructure.batch.entity.BatchDocument;
+import com.github.kronen.cellardoor.infraestructure.batch.repository.MongoBatchRepository;
+
 @ActiveProfiles("test")
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AllocationControllerTestIT {
 
-  @Container @ServiceConnection
-  static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGO_VERSION);
+    @Container
+    @ServiceConnection
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGO_VERSION);
 
-  @LocalServerPort int port;
+    @LocalServerPort
+    int port;
 
-  @Autowired MongoBatchRepository batchRepository;
+    @Autowired
+    MongoBatchRepository batchRepository;
 
-  @Test
-  public void whenRequestGet_thenOK() {
-    BatchDocument batch =
-        Instancio.of(BatchDocument.class)
-            .set(field(BatchDocument::getReference), "batch-001")
-            .create();
-    batchRepository.save(batch).block();
+    @Test
+    public void whenRequestGet_thenOK() {
+        BatchDocument batch = Instancio.of(BatchDocument.class)
+                .set(field(BatchDocument::getReference), "batch-001")
+                .create();
+        batchRepository.save(batch).block();
 
-    // @formatter:off
-    given()
-        .port(port)
-        .pathParam("batch_reference", "batch-001")
-        .when()
-        .get("/allocation/batch/{batch_reference}")
-        .then()
-        .log()
-        .body()
-        .assertThat()
-        .statusCode(200)
-        .body("reference", equalTo("batch-001"), "sku", equalTo(batch.getSku()));
-    // @formatter:on
-  }
+        // @formatter:off
+        given().port(port)
+                .pathParam("batch_reference", "batch-001")
+                .when()
+                .get("/allocation/batch/{batch_reference}")
+                .then()
+                .log()
+                .body()
+                .assertThat()
+                .statusCode(200)
+                .body("reference", equalTo("batch-001"), "sku", equalTo(batch.getSku()));
+        // @formatter:on
+    }
 }

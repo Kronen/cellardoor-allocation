@@ -1,16 +1,18 @@
 package com.github.kronen.cellardoor.infraestructure.batch.entity;
 
-import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.OffsetDateTime;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.OffsetDateTime;
-import java.util.Set;
+import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -19,16 +21,15 @@ import java.util.Set;
 @Document("batches")
 public class BatchDocument {
 
-  @Id
-  private String reference;
+    @Id
+    private String reference;
 
-  private String sku;
+    private String sku;
 
-  @Field("purchased_quantity")
-  private Integer purchasedQuantity;
+    @Field("purchased_quantity")
+    private Integer purchasedQuantity;
 
-  private OffsetDateTime eta;
+    private OffsetDateTime eta;
 
-  private Set<OrderLine> allocations;
-
+    private Set<OrderLine> allocations;
 }
