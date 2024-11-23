@@ -1,9 +1,11 @@
 package com.github.kronen.cellardoor.domain.allocation.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -16,8 +18,8 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Batch {
 
-    public static Comparator<Batch> ETA_COMPARATOR =
-            Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo));
+  public static Comparator<Batch> ETA_COMPARATOR =
+      Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo));
 
     @NonNull @EqualsAndHashCode.Include
     private String reference;
@@ -45,11 +47,11 @@ public class Batch {
         return this.allocations.stream().map(OrderLine::getQuantity).reduce(0, Integer::sum);
     }
 
-    public Integer availableQuantity() {
-        return purchasedQuantity - allocatedQuantity();
-    }
+  public Integer availableQuantity() {
+    return purchasedQuantity - allocatedQuantity();
+  }
 
-    public boolean canAllocate(OrderLine line) {
-        return sku.equals(line.getSku()) && availableQuantity() >= line.getQuantity();
-    }
+  public boolean canAllocate(OrderLine line) {
+    return sku.equals(line.getSku()) && availableQuantity() >= line.getQuantity();
+  }
 }
