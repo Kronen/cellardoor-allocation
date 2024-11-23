@@ -16,5 +16,4 @@ public class OrderLine {
   String sku;
 
   Integer quantity;
-
 }

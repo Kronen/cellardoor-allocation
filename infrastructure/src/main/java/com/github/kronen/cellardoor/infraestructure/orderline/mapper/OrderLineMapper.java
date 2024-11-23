@@ -10,5 +10,4 @@ public interface OrderLineMapper {
   OrderLine toOrderLine(OrderLineDocument orderLine);
 
   OrderLineDocument toOrderLineDocument(OrderLine orderLine);
-
 }
