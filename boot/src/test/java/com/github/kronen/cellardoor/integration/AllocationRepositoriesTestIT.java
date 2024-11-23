@@ -1,6 +1,6 @@
 package com.github.kronen.cellardoor.integration;
 
-import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_6_0_11;
+import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_VERSION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
@@ -42,7 +42,7 @@ import reactor.test.StepVerifier;
 public class AllocationRepositoriesTestIT {
 
   @Container @ServiceConnection
-  static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGO_6_0_11).withReuse(false);
+  static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGO_VERSION).withReuse(false);
 
   @Autowired OrderLineRepository orderLineRepository;
 
