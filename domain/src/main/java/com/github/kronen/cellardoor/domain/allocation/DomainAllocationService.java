@@ -1,15 +1,17 @@
 package com.github.kronen.cellardoor.domain.allocation;
 
+import java.util.function.Function;
+
+import org.springframework.stereotype.Service;
+
 import com.github.kronen.cellardoor.common.exceptions.OutOfStockException;
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
 import com.github.kronen.cellardoor.domain.allocation.service.AllocationService;
+
 import lombok.NonNull;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.function.Function;
 
 @Service
 public class DomainAllocationService implements AllocationService {
@@ -26,7 +28,6 @@ public class DomainAllocationService implements AllocationService {
                 .sort(Batch.ETA_COMPARATOR)
                 .next()
                 .flatMap(allocateOrderLine(line))
-                .switchIfEmpty(
-                        Mono.defer(() -> Mono.error(new OutOfStockException(line.getSku()))));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new OutOfStockException(line.getSku()))));
     }
 }

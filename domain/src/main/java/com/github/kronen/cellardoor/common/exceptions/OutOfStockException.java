@@ -7,5 +7,4 @@ public class OutOfStockException extends Exception {
     public OutOfStockException(String sku) {
         super(String.format(BATCH_UNAVAILABLE, sku));
     }
-
 }
