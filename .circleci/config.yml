@@ -1,22 +1,23 @@
 version: 2.1
 
 workflows:
-  pr-verify:
-    triggers:
-      - type: pull_requests
-        branches:
-          only:
-            - master
+  build_and_test:
     jobs:
-      - build-and-test
-jobs:
-  build-and-test:
+      - build
+      - test:
+          requires:
+            - build
+
+executors:
+  my-executor:
     docker:
       - image: cimg/openjdk:21
 
+jobs:
+  build:
+    executor: my-executor
     steps:
       - checkout
-
       - run:
           name: "Setup Environment Variables"
           command: |
@@ -28,6 +29,16 @@ jobs:
           name: Build
           command: mvn -s settings.xml -B -DskipTests clean package
 
+  test:
+    executor: my-executor
+    steps:
+      - checkout
+      - run:
+          name: "Setup Environment Variables"
+          command: |
+            echo 'export USERNAME="$GIT_USER_ID"' >> "$BASH_ENV"
+            echo 'export PASSWORD="$GIT_PERSONAL_ACCESS"' >> "$BASH_ENV"
+            source "$BASH_ENV"
       - run:
           name: Test
           command: mvn -s settings.xml test
