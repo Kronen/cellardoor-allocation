@@ -1,15 +1,14 @@
 package com.github.kronen.cellardoor.infraestructure.batch.mapper;
 
-import org.mapstruct.Builder;
-import org.mapstruct.Mapper;
-
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.infraestructure.batch.entity.BatchDocument;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
 
 @Mapper(builder = @Builder(disableBuilder = true))
 public interface BatchMapper {
 
-    Batch toBatch(BatchDocument Batch);
+  Batch toBatch(BatchDocument Batch);
 
-    BatchDocument toBatchDocument(Batch Batch);
+  BatchDocument toBatchDocument(Batch Batch);
 }

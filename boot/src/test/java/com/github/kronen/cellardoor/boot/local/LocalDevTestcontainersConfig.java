@@ -10,9 +10,9 @@ import org.testcontainers.containers.MongoDBContainer;
 @TestConfiguration(proxyBeanMethods = false)
 class LocalDevTestcontainersConfig {
 
-    @Bean
-    @ServiceConnection
-    public MongoDBContainer mongoDBContainer() {
-        return new MongoDBContainer(MONGO_VERSION).withReuse(true);
-    }
+  @Bean
+  @ServiceConnection
+  public MongoDBContainer mongoDBContainer() {
+    return new MongoDBContainer(MONGO_VERSION).withReuse(true);
+  }
 }
