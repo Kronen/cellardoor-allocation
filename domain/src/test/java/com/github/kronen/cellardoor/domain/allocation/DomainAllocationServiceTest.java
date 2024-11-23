@@ -1,22 +1,20 @@
 package com.github.kronen.cellardoor.domain.allocation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
+import com.github.kronen.cellardoor.common.exceptions.OutOfStockException;
+import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
+import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-
-import com.github.kronen.cellardoor.common.exceptions.OutOfStock;
-import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
-import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
-
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @Import(DomainAllocationService.class)
@@ -228,7 +226,7 @@ class DomainAllocationServiceTest {
         allocationService.allocate(line1, batches).block();
 
         StepVerifier.create(allocationService.allocate(line2, batches))
-                .expectError(OutOfStock.class)
+                .expectError(OutOfStockException.class)
                 .verify();
     }
 }

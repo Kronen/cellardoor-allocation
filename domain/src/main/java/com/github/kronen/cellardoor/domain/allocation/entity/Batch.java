@@ -1,13 +1,12 @@
 package com.github.kronen.cellardoor.domain.allocation.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.*;
 
 @Data
 @Builder
@@ -16,7 +15,7 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Batch {
 
-    public static Comparator<Batch> ETA_COMPARATOR =
+    public static final Comparator<Batch> ETA_COMPARATOR =
             Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo));
 
     @NonNull @EqualsAndHashCode.Include
