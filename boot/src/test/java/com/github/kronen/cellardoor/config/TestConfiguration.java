@@ -7,5 +7,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class TestConfiguration {
 
-  public static final String MONGO_6_0_11 = "mongo:6.0.11";
+  public static final String MONGO_VERSION = "mongo:8.0.3";
+
 }

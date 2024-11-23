@@ -1,6 +1,6 @@
 package com.github.kronen.cellardoor.integration;
 
-import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_6_0_11;
+import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_VERSION;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.instancio.Select.field;
@@ -24,7 +24,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class AllocationControllerTestIT {
 
   @Container @ServiceConnection
-  static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGO_6_0_11);
+  static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGO_VERSION);
 
   @LocalServerPort int port;
 

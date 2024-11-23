@@ -1,6 +1,8 @@
 package com.github.kronen.cellardoor.boot.local;
 
-import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_6_0_11;
+
+import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_VERSION;
+
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -13,6 +15,6 @@ class LocalDevTestcontainersConfig {
   @Bean
   @ServiceConnection
   public MongoDBContainer mongoDBContainer() {
-    return new MongoDBContainer(MONGO_6_0_11).withReuse(true);
+    return new MongoDBContainer(MONGO_VERSION).withReuse(true);
   }
 }
