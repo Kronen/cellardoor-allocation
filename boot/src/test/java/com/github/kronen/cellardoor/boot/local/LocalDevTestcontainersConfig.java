@@ -1,8 +1,6 @@
 package com.github.kronen.cellardoor.boot.local;
 
-
 import static com.github.kronen.cellardoor.config.TestConfiguration.MONGO_VERSION;
-
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;

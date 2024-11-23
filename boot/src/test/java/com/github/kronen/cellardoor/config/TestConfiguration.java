@@ -8,5 +8,4 @@ import org.springframework.context.annotation.Profile;
 public class TestConfiguration {
 
   public static final String MONGO_VERSION = "mongo:8.0.3";
-
 }
