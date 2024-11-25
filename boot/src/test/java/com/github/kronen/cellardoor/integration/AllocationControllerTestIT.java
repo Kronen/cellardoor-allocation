@@ -34,17 +34,17 @@ class AllocationControllerTestIT {
                 .create();
         batchRepository.save(batch).block();
 
-        // @formatter:off
-        given().port(port)
-                .pathParam("batch_reference", "batch-001")
-                .when()
-                .get("/allocation/batch/{batch_reference}")
-                .then()
-                .log()
-                .body()
-                .assertThat()
-                .statusCode(200)
-                .body("reference", equalTo("batch-001"), "sku", equalTo(batch.getSku()));
-        // @formatter:on
+        // @spotless:off
+        given()
+            .port(port)
+            .pathParam("batch_reference", "batch-001")
+       .when()
+            .get("/allocation/batch/{batch_reference}")
+       .then()
+            .log().body()
+       .assertThat()
+            .statusCode(200)
+            .body("reference", equalTo("batch-001"), "sku", equalTo(batch.getSku()));
+        // @spotless:on
     }
 }
