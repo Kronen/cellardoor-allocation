@@ -7,7 +7,6 @@ import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
 import com.github.kronen.cellardoor.domain.allocation.service.AllocationService;
 
-import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,7 +14,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class DomainAllocationService implements AllocationService {
 
-  private static Function<Batch, Mono<? extends @NonNull String>> allocateOrderLine(OrderLine line) {
+  private static Function<Batch, Mono<? extends String>> allocateOrderLineFunction(OrderLine line) {
     return batch -> {
       batch.allocate(line);
       return Mono.just(batch.getReference());
@@ -26,7 +25,7 @@ public class DomainAllocationService implements AllocationService {
     return batches.filter(b -> b.canAllocate(line))
         .sort(Batch.ETA_COMPARATOR)
         .next()
-        .flatMap(allocateOrderLine(line))
+        .flatMap(allocateOrderLineFunction(line))
         .switchIfEmpty(Mono.defer(() ->
             Mono.error(new OutOfStockException(line.getSku(), line.getOrderId(), line.getQuantity()))));
   }

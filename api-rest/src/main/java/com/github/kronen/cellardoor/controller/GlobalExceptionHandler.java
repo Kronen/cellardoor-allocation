@@ -6,7 +6,6 @@ import com.github.kronen.cellardoor.common.exceptions.InvalidSkuException;
 import com.github.kronen.cellardoor.common.exceptions.OutOfStockException;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.spi.LoggingEventBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,12 +18,13 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(OutOfStockException.class)
   public Mono<ProblemDetail> handleOutOfStockException(OutOfStockException ex) {
-    LoggingEventBuilder builder = log.atError()
+    log.atError()
         .setMessage(ex.getMessage())
         .addKeyValue("sku", ex.getSku())
         .addKeyValue("orderId", ex.getOrderId())
-        .addKeyValue("quantity", ex.getQuantity());
-    builder.setCause(ex.getCause()).log();
+        .addKeyValue("quantity", ex.getQuantity())
+        .setCause(ex.getCause())
+        .log();
 
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getDetail());
     problemDetail.setType(URI.create("/errors/out-of-stock"));
