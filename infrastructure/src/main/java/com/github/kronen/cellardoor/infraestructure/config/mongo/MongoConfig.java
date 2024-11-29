@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 @Configuration
 public class MongoConfig {
 
-    @Bean
-    public MongoCustomConversions mongoCustomConversions() {
-        return new MongoCustomConversions(
-                Arrays.asList(new MongoOffsetDateTimeWriter(), new MongoOffsetDateTimeReader()));
-    }
+  @Bean
+  public MongoCustomConversions mongoCustomConversions() {
+    return new MongoCustomConversions(
+        Arrays.asList(new MongoOffsetDateTimeWriter(), new MongoOffsetDateTimeReader()));
+  }
 }

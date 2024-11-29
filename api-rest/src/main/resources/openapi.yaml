@@ -11,7 +11,7 @@ tags:
     description: Allocation of order lines
 
 paths:
-  /allocation/allocate:
+  /allocate:
     post:
       tags:
         - allocation
@@ -35,7 +35,7 @@ paths:
           description: Out of stock
         '400':
           description: Bad request
-  /allocation/batch/{batch_reference}:
+  /batch/{batch_reference}:
     get:
       tags:
         - allocation

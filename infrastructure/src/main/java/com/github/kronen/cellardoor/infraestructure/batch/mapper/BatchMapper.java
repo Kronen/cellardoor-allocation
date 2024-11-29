@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 @Mapper(builder = @Builder(disableBuilder = true))
 public interface BatchMapper {
 
-    Batch toBatch(BatchDocument batch);
+  Batch toBatch(BatchDocument batch);
 
-    BatchDocument toBatchDocument(Batch batch);
+  BatchDocument toBatchDocument(Batch batch);
 }

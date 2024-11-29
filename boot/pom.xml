@@ -12,7 +12,7 @@
 
   <artifactId>boot</artifactId>
   <packaging>jar</packaging>
-  <name>${project.artifactId}</name>
+  <name>boot</name>
   <description>Infrastructure layer for Cellardoor Allocation</description>
 
   <dependencies>
@@ -28,31 +28,32 @@
     </dependency>
     <dependency>
       <groupId>com.github.kronen</groupId>
+      <artifactId>application</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.kronen</groupId>
       <artifactId>infrastructure</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <!-- Testing -->
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>mongodb</artifactId>
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.instancio</groupId>
       <artifactId>instancio-junit</artifactId>
     </dependency>
 
     <!-- Local Development -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-docker-compose</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>

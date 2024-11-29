@@ -15,18 +15,19 @@ import reactor.core.publisher.Mono;
 @Service
 public class DomainAllocationService implements AllocationService {
 
-    private static Function<Batch, Mono<? extends @NonNull String>> allocateOrderLine(OrderLine line) {
-        return batch -> {
-            batch.allocate(line);
-            return Mono.just(batch.getReference());
-        };
-    }
+  private static Function<Batch, Mono<? extends @NonNull String>> allocateOrderLine(OrderLine line) {
+    return batch -> {
+      batch.allocate(line);
+      return Mono.just(batch.getReference());
+    };
+  }
 
-    public Mono<String> allocate(OrderLine line, Flux<Batch> batches) {
-        return batches.filter(b -> b.canAllocate(line))
-                .sort(Batch.ETA_COMPARATOR)
-                .next()
-                .flatMap(allocateOrderLine(line))
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new OutOfStockException(line.getSku()))));
-    }
+  public Mono<String> allocate(OrderLine line, Flux<Batch> batches) {
+    return batches.filter(b -> b.canAllocate(line))
+        .sort(Batch.ETA_COMPARATOR)
+        .next()
+        .flatMap(allocateOrderLine(line))
+        .switchIfEmpty(Mono.defer(() ->
+            Mono.error(new OutOfStockException(line.getSku(), line.getOrderId(), line.getQuantity()))));
+  }
 }

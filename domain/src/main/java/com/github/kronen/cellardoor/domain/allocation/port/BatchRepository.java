@@ -7,11 +7,11 @@ import reactor.core.publisher.Mono;
 
 public interface BatchRepository {
 
-    Flux<Batch> findAll();
+  Flux<Batch> findAll();
 
-    Mono<Batch> findByReference(String batchReference);
+  Mono<Batch> findByReference(String batchReference);
 
-    Mono<Batch> save(Batch batch);
+  Mono<Batch> save(Batch batch);
 
-    Flux<Batch> saveAll(Flux<Batch> batches);
+  Flux<Batch> saveAll(Flux<Batch> batches);
 }

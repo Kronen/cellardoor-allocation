@@ -272,9 +272,10 @@
     <module name="CustomImportOrder">
       <property name="sortImportsInGroupAlphabetically" value="false"/>
       <property name="separateLineBetweenGroups" value="true"/>
-      <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
+      <property name="customImportOrderRules"
+                value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
       <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
-      <property name="specialImportsRegExp" value="com.github.kronen." />
+      <property name="specialImportsRegExp" value="com.github.kronen."/>
     </module>
     <module name="MethodParamPad">
       <property name="tokens"

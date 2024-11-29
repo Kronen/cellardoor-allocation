@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: standalone
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: cellardoor-allocations
+  webflux:
+    problemdetails:
+      enabled: true
+
+server:
+  servlet:
+    context-path: /allocation/
+
+logging:
+  level:
+    com.github.kronen: INFO
+  pattern:
+    console: '%date  %highlight(%-5level) [%12.12thread] %cyan(%-40.40logger{40}) : %msg %kvp%n'
