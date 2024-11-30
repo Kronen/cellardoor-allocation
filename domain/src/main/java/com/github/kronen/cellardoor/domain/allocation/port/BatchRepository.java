@@ -11,6 +11,8 @@ public interface BatchRepository {
 
   Mono<Batch> findByReference(String batchReference);
 
+  Flux<Batch> findBySku(String sku);
+
   Mono<Batch> save(Batch batch);
 
   Flux<Batch> saveAll(Flux<Batch> batches);

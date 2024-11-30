@@ -20,6 +20,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 @ExtendWith(MockitoExtension.class)
 class AllocateUseCaseImplTest {
 
@@ -33,19 +36,21 @@ class AllocateUseCaseImplTest {
   DomainAllocationService domainAllocationService;
 
   @Test
-  void shouldReturnAllocation() {
-    OrderLine line = OrderLine.builder()
+  void shouldAllocateOrderlineAndReturnBatchReference() {
+    var sku = "COMPLICATED-LAMP";
+    var line = OrderLine.builder()
         .orderId("o1")
-        .sku("COMPLICATED-LAMP")
+        .sku(sku)
         .quantity(10)
         .build();
-    Batch batch = Batch.builder()
+    var batch = Batch.builder()
         .reference("b1")
-        .sku("COMPLICATED-LAMP")
+        .sku(sku)
         .purchasedQuantity(100)
         .build();
-    given(batchRepository.findAll()).willReturn(Flux.just(batch));
-    given(domainAllocationService.allocate(eq(line), any(Flux.class))).willReturn(Mono.just("b1"));
+    given(batchRepository.findBySku(sku)).willReturn(Flux.just(batch));
+    given(domainAllocationService.allocate(eq(line), any(Flux.class))).willReturn(Mono.just(batch));
+    given(batchRepository.save(any(Batch.class))).willReturn(Mono.just(batch));
 
     StepVerifier.create(allocateUseCase.allocate(Mono.just(line)))
         .expectNext("b1")
@@ -54,23 +59,20 @@ class AllocateUseCaseImplTest {
 
   @Test
   void shouldThrowExceptionForInvalidSku() {
-    OrderLine line = OrderLine.builder()
+    var line = OrderLine.builder()
         .orderId("o1")
         .sku("NONEXISTENTSKU") // SKU that doesn't match
         .quantity(10)
         .build();
-    Batch batch = Batch.builder()
-        .reference("b1")
-        .sku("AREALSKU") // Different SKU
-        .purchasedQuantity(100)
-        .build();
-    given(batchRepository.findAll()).willReturn(Flux.just(batch));
+    given(batchRepository.findBySku("NONEXISTENTSKU")).willReturn(Flux.empty());
 
     StepVerifier.create(allocateUseCase.allocate(Mono.just(line)))
         .expectErrorSatisfies(throwable -> {
           assertThat(throwable).isInstanceOf(InvalidSkuException.class);
-          assertThat(throwable.getMessage()).contains("NONEXISTENTSKU");
+          InvalidSkuException exception = (InvalidSkuException) throwable;
+          assertThat(exception.getDetail()).contains("NONEXISTENTSKU");
         })
         .verify();
   }
+
 }

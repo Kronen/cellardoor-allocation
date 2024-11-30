@@ -1,7 +1,5 @@
 package com.github.kronen.cellardoor.domain.allocation;
 
-import java.util.function.Function;
-
 import com.github.kronen.cellardoor.common.exceptions.OutOfStockException;
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
@@ -14,19 +12,12 @@ import reactor.core.publisher.Mono;
 @Service
 public class DomainAllocationService implements AllocationService {
 
-  private static Function<Batch, Mono<? extends String>> allocateOrderLineFunction(OrderLine line) {
-    return batch -> {
-      batch.allocate(line);
-      return Mono.just(batch.getReference());
-    };
-  }
-
-  public Mono<String> allocate(OrderLine line, Flux<Batch> batches) {
-    return batches.filter(b -> b.canAllocate(line))
+  public Mono<Batch> allocate(OrderLine line, Flux<Batch> batches) {
+    return batches.filter(batch -> batch.canAllocate(line))
         .sort(Batch.ETA_COMPARATOR)
         .next()
-        .flatMap(allocateOrderLineFunction(line))
-        .switchIfEmpty(Mono.defer(() ->
-            Mono.error(new OutOfStockException(line.getSku(), line.getOrderId(), line.getQuantity()))));
+        .doOnNext(batch -> batch.allocate(line))
+        .switchIfEmpty(
+            Mono.error(new OutOfStockException(line.getSku(), line.getOrderId(), line.getQuantity())));
   }
 }

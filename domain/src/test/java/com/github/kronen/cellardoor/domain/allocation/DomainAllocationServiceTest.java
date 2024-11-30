@@ -135,7 +135,7 @@ class DomainAllocationServiceTest {
         .build();
 
     StepVerifier.create(allocationService.allocate(line, Flux.just(warehouseBatch, shipmentBatch)))
-        .expectNext(warehouseBatch.getReference())
+        .expectNext(warehouseBatch)
         .verifyComplete();
 
     assertThat(warehouseBatch.availableQuantity()).isEqualTo(90);
@@ -169,7 +169,7 @@ class DomainAllocationServiceTest {
         .build();
 
     StepVerifier.create(allocationService.allocate(line, Flux.just(mediumBatch, earliestBatch, latestBatch)))
-        .expectNext(earliestBatch.getReference())
+        .expectNext(earliestBatch)
         .verifyComplete();
 
     assertThat(earliestBatch.availableQuantity()).isEqualTo(90);
@@ -196,7 +196,7 @@ class DomainAllocationServiceTest {
         .build();
 
     StepVerifier.create(allocationService.allocate(line, Flux.just(warehouseBatch, shipmentBatch)))
-        .expectNext(warehouseBatch.getReference())
+        .expectNext(warehouseBatch)
         .verifyComplete();
   }
 

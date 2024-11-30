@@ -13,7 +13,7 @@ public interface AllocationService {
    *
    * @param line    The order line to allocate.
    * @param batches The available batches to choose from.
-   * @return A Mono that emits the reference of the allocated batch
+   * @return A Mono that emits the allocated batch
    */
-  Mono<String> allocate(OrderLine line, Flux<Batch> batches);
+  Mono<Batch> allocate(OrderLine line, Flux<Batch> batches);
 }

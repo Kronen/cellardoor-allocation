@@ -3,9 +3,11 @@ spring:
     compose:
       enabled: true
       file: classpath:docker-compose.yml
-
+      stop:
+        command: down
       skip:
         in-tests: false
+
   data:
     mongodb:
       database: ${DATABASE_NAME:cellardoor-allocation}

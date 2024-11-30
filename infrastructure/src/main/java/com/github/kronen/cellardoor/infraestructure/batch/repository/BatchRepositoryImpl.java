@@ -28,6 +28,11 @@ public class BatchRepositoryImpl implements BatchRepository {
   }
 
   @Override
+  public Flux<Batch> findBySku(String sku) {
+    return mongoRepository.findBySku(sku).map(mapper::toBatch);
+  }
+
+  @Override
   public Mono<Batch> save(Batch batch) {
     return mongoRepository.save(mapper.toBatchDocument(batch)).map(mapper::toBatch);
   }

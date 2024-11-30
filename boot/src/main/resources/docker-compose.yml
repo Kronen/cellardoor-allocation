@@ -2,7 +2,7 @@ name: cellardoor-allocation
 
 services:
   mongodb:
-    image: mongo:latest
+    image: mongo:8.0.3
     container_name: mongodb
     restart: always
     environment:
@@ -11,9 +11,5 @@ services:
       MONGO_INITDB_DATABASE: cellardoor-allocation
     ports:
       - 27017:27017
-    volumes:
-      - db:/data/db
-volumes:
-  db:
-    driver:
-      local
+    tmpfs:
+      - /data/db

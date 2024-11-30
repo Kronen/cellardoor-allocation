@@ -1,8 +1,7 @@
 package com.github.kronen.cellardoor.application.usecase;
 
-import java.util.List;
-
 import com.github.kronen.cellardoor.common.exceptions.InvalidSkuException;
+import com.github.kronen.cellardoor.common.exceptions.OutOfStockException;
 import com.github.kronen.cellardoor.domain.allocation.DomainAllocationService;
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
@@ -24,22 +23,23 @@ public class AllocateUseCaseImpl implements AllocateUseCase {
 
   @Override
   public Mono<String> allocate(Mono<OrderLine> orderLineMono) {
-    return orderLineMono.flatMap(
-        orderLine -> batchRepository.findAll().collectList().flatMap(batches -> {
-          if (!isValidSku(orderLine.getSku(), batches)) {
+    return orderLineMono.flatMap(orderLine ->
+      batchRepository.findBySku(orderLine.getSku())
+        .collectList()
+        .flatMap(batches -> {
+          if (batches.isEmpty()) {
             return Mono.error(new InvalidSkuException(orderLine.getSku()));
           }
-
-          return domainAllocationService.allocate(orderLine, Flux.fromIterable(batches));
-        }));
+          return domainAllocationService.allocate(orderLine, Flux.fromIterable(batches))
+            .flatMap(batchRepository::save)
+            .map(Batch::getReference)
+            .switchIfEmpty(Mono.error(new OutOfStockException(orderLine.getSku(), orderLine.getOrderId(), orderLine.getQuantity())));
+        })
+    );
   }
 
   @Override
   public Mono<Batch> getBatch(String reference) {
     return batchRepository.findByReference(reference);
-  }
-
-  private boolean isValidSku(String sku, List<Batch> batches) {
-    return batches.stream().anyMatch(batch -> batch.getSku().equals(sku)); // SKU validation logic
   }
 }
