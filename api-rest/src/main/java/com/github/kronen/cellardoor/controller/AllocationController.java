@@ -7,6 +7,7 @@ import com.github.kronen.cellardoor.domain.allocation.entity.AllocateRequest;
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.usecase.AllocateUseCase;
 import com.github.kronen.cellardoor.dto.AllocateRequestDTO;
+import com.github.kronen.cellardoor.dto.NewBatchDTO;
 import com.github.kronen.cellardoor.mapper.AllocationMapper;
 
 import jakarta.validation.Valid;
@@ -36,6 +37,15 @@ public class AllocationController implements AllocationApi {
         .doOnNext(batchRef -> log.info("Allocated reference: {}", batchRef))
         .map(batchRef -> ResponseEntity.created(URI.create("allocation/" + batchRef))
             .body(batchRef));
+  }
+
+  @Override
+  public Mono<ResponseEntity<Void>> createBatch(Mono<NewBatchDTO> newBatchDTO, ServerWebExchange exchange) {
+    return newBatchDTO
+        .map(mapper::toDomain)
+        .flatMap(allocateUseCase::createBatch)
+        .map(batch -> ResponseEntity.created(URI.create("batch/" + batch.getReference()))
+            .build());
   }
 
   @Override

@@ -12,6 +12,7 @@ import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
 import com.github.kronen.cellardoor.domain.allocation.port.BatchRepository;
 import com.github.kronen.cellardoor.dto.AllocateRequestDTO;
+import com.github.kronen.cellardoor.dto.NewBatchDTO;
 
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,10 +78,9 @@ class AllocationTestIT {
     var laterBatch = RandomRefs.randomBatchRef(2);
     var otherBatch = RandomRefs.randomBatchRef(3);
 
-    addStock(List.of(
-        createBatch(earlyBatch, sku, 100, OffsetDateTime.parse("2024-11-15T00:00:00Z")),
-        createBatch(laterBatch, sku, 100, OffsetDateTime.parse("2024-11-16T00:00:00Z")),
-        createBatch(otherBatch, otherSku, 100, null)));
+    postToAddBatch(laterBatch, sku, 100, OffsetDateTime.parse("2024-11-15T00:00:00Z"));
+    postToAddBatch(earlyBatch, sku, 100, OffsetDateTime.parse("2024-11-14T00:00:00Z"));
+    postToAddBatch(otherBatch, otherSku, 100, null);
 
     // Prepare allocation request
     var orderId = RandomRefs.randomOrderId();
@@ -129,7 +129,7 @@ class AllocationTestIT {
 
     // Add batches via API
     postToAddBatch(laterBatch, sku, 100, OffsetDateTime.parse("2024-11-15T00:00:00Z"));
-    postToAddBatch(earlyBatch, sku, 100, OffsetDateTime.parse("2024-11-145T00:00:00Z"));
+    postToAddBatch(earlyBatch, sku, 100, OffsetDateTime.parse("2024-11-14T00:00:00Z"));
     postToAddBatch(otherBatch, otherSku, 100, null);
 
     // Allocate the batch
@@ -156,13 +156,12 @@ class AllocationTestIT {
   void postToAddBatch(String ref, String sku, int qty, OffsetDateTime eta) {
     webClient
         .post()
-        .uri("/add_batch")
-        .bodyValue(Batch.builder()
+        .uri("/batch")
+        .bodyValue(new NewBatchDTO()
             .reference(ref)
             .sku(sku)
             .purchasedQuantity(qty)
-            .eta(eta)
-            .build())
+            .eta(eta))
         .exchange()
         .expectStatus()
         .isCreated();

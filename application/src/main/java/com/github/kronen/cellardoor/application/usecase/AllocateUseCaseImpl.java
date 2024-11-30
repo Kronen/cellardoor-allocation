@@ -23,23 +23,29 @@ public class AllocateUseCaseImpl implements AllocateUseCase {
 
   @Override
   public Mono<String> allocate(Mono<OrderLine> orderLineMono) {
-    return orderLineMono.flatMap(orderLine ->
-      batchRepository.findBySku(orderLine.getSku())
+    return orderLineMono.flatMap(orderLine -> batchRepository
+        .findBySku(orderLine.getSku())
         .collectList()
         .flatMap(batches -> {
           if (batches.isEmpty()) {
             return Mono.error(new InvalidSkuException(orderLine.getSku()));
           }
-          return domainAllocationService.allocate(orderLine, Flux.fromIterable(batches))
-            .flatMap(batchRepository::save)
-            .map(Batch::getReference)
-            .switchIfEmpty(Mono.error(new OutOfStockException(orderLine.getSku(), orderLine.getOrderId(), orderLine.getQuantity())));
-        })
-    );
+          return domainAllocationService
+              .allocate(orderLine, Flux.fromIterable(batches))
+              .flatMap(batchRepository::save)
+              .map(Batch::getReference)
+              .switchIfEmpty(Mono.error(new OutOfStockException(
+                  orderLine.getSku(), orderLine.getOrderId(), orderLine.getQuantity())));
+        }));
   }
 
   @Override
   public Mono<Batch> getBatch(String reference) {
     return batchRepository.findByReference(reference);
+  }
+
+  @Override
+  public Mono<Batch> createBatch(Batch batch) {
+    return batchRepository.save(batch);
   }
 }

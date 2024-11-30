@@ -20,9 +20,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 @ExtendWith(MockitoExtension.class)
 class AllocateUseCaseImplTest {
 
@@ -38,16 +35,9 @@ class AllocateUseCaseImplTest {
   @Test
   void shouldAllocateOrderlineAndReturnBatchReference() {
     var sku = "COMPLICATED-LAMP";
-    var line = OrderLine.builder()
-        .orderId("o1")
-        .sku(sku)
-        .quantity(10)
-        .build();
-    var batch = Batch.builder()
-        .reference("b1")
-        .sku(sku)
-        .purchasedQuantity(100)
-        .build();
+    var line = OrderLine.builder().orderId("o1").sku(sku).quantity(10).build();
+    var batch =
+        Batch.builder().reference("b1").sku(sku).purchasedQuantity(100).build();
     given(batchRepository.findBySku(sku)).willReturn(Flux.just(batch));
     given(domainAllocationService.allocate(eq(line), any(Flux.class))).willReturn(Mono.just(batch));
     given(batchRepository.save(any(Batch.class))).willReturn(Mono.just(batch));
@@ -74,5 +64,4 @@ class AllocateUseCaseImplTest {
         })
         .verify();
   }
-
 }
