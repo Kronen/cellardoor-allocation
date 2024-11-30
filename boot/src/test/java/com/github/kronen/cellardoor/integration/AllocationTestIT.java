@@ -56,19 +56,17 @@ class AllocationTestIT {
   void shouldReturn200StatusCodeAndExpectedResponseBodyWhenGettingBatchAllocation() {
     var sku = RandomRefs.randomSku();
 
-    postToAddBatch("batch-001", sku, 100, null);
+    addStock(List.of(createBatch("batch-001", sku, 100, null)));
 
+    // spotless:off
     webClient
         .get()
-        .uri("/allocation/batch/{batch_reference}", "batch-001")
-        .exchange()
-        .expectStatus()
-        .isOk()
+        .uri("/batch/{batch_reference}", "batch-001").exchange()
+        .expectStatus().isOk()
         .expectBody()
-        .jsonPath("$.reference")
-        .isEqualTo("batch-001")
-        .jsonPath("$.sku")
-        .isEqualTo(sku);
+            .jsonPath("$.reference").isEqualTo("batch-001")
+            .jsonPath("$.sku").isEqualTo(sku);
+    // spotless:on
   }
 
   @Test
@@ -90,11 +88,11 @@ class AllocationTestIT {
     // Send allocation request
     var response = this.postToAllocate(orderId, sku, 3);
 
-    // Assert allocation response
-    response.expectStatus()
-        .isEqualTo(HttpStatus.CREATED)
-        .expectBody(String.class)
-        .isEqualTo(earlyBatch);
+    // spotless:off
+    response
+        .expectStatus().isEqualTo(HttpStatus.CREATED)
+        .expectBody(String.class).isEqualTo(earlyBatch);
+    // spotless:on
   }
 
   @Test

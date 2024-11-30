@@ -88,3 +88,4 @@ nb-configuration.xml
 boot/log.json*
 log.json
 .codiumai
+*.gz
