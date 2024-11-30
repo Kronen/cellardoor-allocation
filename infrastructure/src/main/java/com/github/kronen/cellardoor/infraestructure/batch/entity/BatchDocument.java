@@ -1,10 +1,12 @@
 package com.github.kronen.cellardoor.infraestructure.batch.entity;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,15 +22,16 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document("batches")
 public class BatchDocument {
 
-    @Id
-    private String reference;
+  @Id
+  private String reference;
 
-    private String sku;
+  private String sku;
 
-    @Field("purchased_quantity")
-    private Integer purchasedQuantity;
+  @Field("purchased_quantity")
+  private Integer purchasedQuantity;
 
-    private OffsetDateTime eta;
+  private OffsetDateTime eta;
 
-    private Set<OrderLine> allocations;
+  @JsonProperty(defaultValue = "[]")
+  private Set<OrderLine> allocations = new HashSet<>();
 }

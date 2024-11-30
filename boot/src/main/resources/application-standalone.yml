@@ -1,0 +1,26 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: classpath:docker-compose.yml
+      stop:
+        command: down
+      skip:
+        in-tests: false
+
+  data:
+    mongodb:
+      database: ${DATABASE_NAME:cellardoor-allocation}
+      uri: ${DATABASE_URI:mongodb://test:test@localhost:27017/?retryWrites=true&w=majority}
+
+logging:
+  level:
+    com.github.kronen: DEBUG
+  output:
+    ansi:
+      enabled: ALWAYS
+  structured:
+    format:
+      file: ecs
+  file:
+    name: log.json

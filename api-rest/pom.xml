@@ -71,6 +71,7 @@
                 <useSpringController>false</useSpringController>
                 <documentationProvider>springdoc</documentationProvider>
                 <skipDefaultInterface>true</skipDefaultInterface>
+                <useTags>true</useTags>
               </configOptions>
               <modelNameSuffix>DTO</modelNameSuffix>
               <schemaMappings>

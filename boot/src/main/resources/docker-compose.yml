@@ -1,0 +1,15 @@
+name: cellardoor-allocation
+
+services:
+  mongodb:
+    image: mongo:8.0.3
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test
+      MONGO_INITDB_DATABASE: cellardoor-allocation
+    ports:
+      - 27017:27017
+    tmpfs:
+      - /data/db

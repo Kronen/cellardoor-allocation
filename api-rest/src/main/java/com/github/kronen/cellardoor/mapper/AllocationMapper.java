@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface AllocationMapper {
 
-    AllocateRequest toDomain(AllocateRequestDTO allocateRequest);
+  AllocateRequest toDomain(AllocateRequestDTO allocateRequest);
 }

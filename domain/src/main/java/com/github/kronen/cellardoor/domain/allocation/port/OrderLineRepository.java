@@ -7,11 +7,11 @@ import reactor.core.publisher.Mono;
 
 public interface OrderLineRepository {
 
-    Flux<OrderLine> findAll();
+  Flux<OrderLine> findAll();
 
-    Flux<OrderLine> saveAll(Flux<OrderLine> orderLines);
+  Flux<OrderLine> saveAll(Flux<OrderLine> orderLines);
 
-    Mono<OrderLine> save(OrderLine orderLine);
+  Mono<OrderLine> save(OrderLine orderLine);
 
-    Mono<Void> deleteAll();
+  Mono<Void> deleteAll();
 }

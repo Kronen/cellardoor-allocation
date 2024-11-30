@@ -10,5 +10,5 @@ import lombok.Data;
 @Builder
 public class AllocateRequest {
 
-    private OrderLine orderLine;
+  private OrderLine orderLine;
 }

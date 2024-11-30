@@ -9,11 +9,11 @@ import lombok.Value;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderLine {
 
-    String id;
+  String id;
 
-    String orderId;
+  String orderId;
 
-    String sku;
+  String sku;
 
-    Integer quantity;
+  Integer quantity;
 }

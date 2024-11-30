@@ -15,9 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("orders")
 public class OrderDocument {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @Indexed(unique = true)
-    private String reference;
+  @Indexed(unique = true)
+  private String reference;
 }

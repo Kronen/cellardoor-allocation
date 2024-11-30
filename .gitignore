@@ -85,3 +85,7 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+boot/log.json*
+log.json
+.codiumai
+*.gz

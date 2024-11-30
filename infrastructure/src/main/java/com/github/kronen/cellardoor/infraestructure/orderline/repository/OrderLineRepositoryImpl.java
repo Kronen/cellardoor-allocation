@@ -13,27 +13,27 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class OrderLineRepositoryImpl implements OrderLineRepository {
 
-    private final MongoOrderLineRepository repository;
+  private final MongoOrderLineRepository repository;
 
-    private final OrderLineMapper mapper;
+  private final OrderLineMapper mapper;
 
-    @Override
-    public Flux<OrderLine> findAll() {
-        return repository.findAll().map(mapper::toOrderLine);
-    }
+  @Override
+  public Flux<OrderLine> findAll() {
+    return repository.findAll().map(mapper::toOrderLine);
+  }
 
-    @Override
-    public Flux<OrderLine> saveAll(Flux<OrderLine> orderLines) {
-        return repository.saveAll(orderLines.map(mapper::toOrderLineDocument)).map(mapper::toOrderLine);
-    }
+  @Override
+  public Flux<OrderLine> saveAll(Flux<OrderLine> orderLines) {
+    return repository.saveAll(orderLines.map(mapper::toOrderLineDocument)).map(mapper::toOrderLine);
+  }
 
-    @Override
-    public Mono<OrderLine> save(OrderLine orderLine) {
-        return repository.save(mapper.toOrderLineDocument(orderLine)).map(mapper::toOrderLine);
-    }
+  @Override
+  public Mono<OrderLine> save(OrderLine orderLine) {
+    return repository.save(mapper.toOrderLineDocument(orderLine)).map(mapper::toOrderLine);
+  }
 
-    @Override
-    public Mono<Void> deleteAll() {
-        return repository.deleteAll();
-    }
+  @Override
+  public Mono<Void> deleteAll() {
+    return repository.deleteAll();
+  }
 }
