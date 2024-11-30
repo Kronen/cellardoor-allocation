@@ -10,4 +10,6 @@ public interface AllocateUseCase {
   Mono<String> allocate(Mono<OrderLine> line);
 
   Mono<Batch> getBatch(String reference);
+
+  Mono<Batch> createBatch(Batch batch);
 }

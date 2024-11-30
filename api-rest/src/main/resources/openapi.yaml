@@ -56,6 +56,24 @@ paths:
                 $ref: '#/components/schemas/Batch'
         '404':
           description: Batch not found
+  /batch:
+    post:
+      tags:
+        - allocation
+      summary: Create a batch for allocation
+      operationId: createBatch
+      requestBody:
+        description: The new batch to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBatch'
+      responses:
+        '201':
+          description: Batch created successfully
+        '400':
+          description: Bad request
 
 components:
   schemas:
@@ -69,31 +87,47 @@ components:
       properties:
         orderId:
           type: string
+          example: "order123"
         sku:
           type: string
+          example: "SKU-123"
         quantity:
           type: integer
+          format: int32
+          example: 10
       required:
         - orderId
         - sku
         - quantity
-    Batch:
+
+    NewBatch:
       type: object
       properties:
-        purchasedQuantity:
-          type: integer
-        allocations:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderLine'
         reference:
           type: string
+          example: "batch-123"
         sku:
           type: string
+          example: "SKU-123"
+        purchasedQuantity:
+          type: integer
+          format: int32
+          example: 100
         eta:
           type: string
           format: date-time
+          example: "2025-11-15T12:00:00Z"
       required:
-        - purchasedQuantity
         - reference
         - sku
+        - purchasedQuantity
+
+    Batch:
+      allOf:
+        - $ref: '#/components/schemas/NewBatch'
+        - type: object
+          properties:
+            allocations:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderLine'
