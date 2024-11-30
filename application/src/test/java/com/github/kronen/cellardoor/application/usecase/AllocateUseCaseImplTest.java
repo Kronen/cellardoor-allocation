@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @ExtendWith(MockitoExtension.class)
-public class AllocateUseCaseImplTest {
+class AllocateUseCaseImplTest {
 
   @InjectMocks
   AllocateUseCaseImpl allocateUseCase;
@@ -33,7 +33,7 @@ public class AllocateUseCaseImplTest {
   DomainAllocationService domainAllocationService;
 
   @Test
-  public void shouldReturnAllocation() {
+  void shouldReturnAllocation() {
     OrderLine line = OrderLine.builder()
         .orderId("o1")
         .sku("COMPLICATED-LAMP")
@@ -53,7 +53,7 @@ public class AllocateUseCaseImplTest {
   }
 
   @Test
-  public void shouldThrowExceptionForInvalidSku() {
+  void shouldThrowExceptionForInvalidSku() {
     OrderLine line = OrderLine.builder()
         .orderId("o1")
         .sku("NONEXISTENTSKU") // SKU that doesn't match
