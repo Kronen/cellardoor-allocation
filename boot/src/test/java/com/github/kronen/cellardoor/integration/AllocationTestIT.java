@@ -1,30 +1,23 @@
 package com.github.kronen.cellardoor.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 import com.github.kronen.cellardoor.RandomRefs;
-import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
-import com.github.kronen.cellardoor.domain.allocation.port.BatchRepository;
 import com.github.kronen.cellardoor.dto.AllocateRequestDTO;
 import com.github.kronen.cellardoor.dto.NewBatchDTO;
 
-import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AllocationTestIT {
@@ -32,20 +25,7 @@ class AllocationTestIT {
   @LocalServerPort
   int port;
 
-  @Autowired
-  BatchRepository batchRepository;
-
   WebTestClient webClient;
-
-  private static Batch createBatch(String earlyBatch, String sku, int purchasedQuantity, OffsetDateTime eta) {
-    return Instancio.of(Batch.class)
-        .set(field(Batch::getReference), earlyBatch)
-        .set(field(Batch::getSku), sku)
-        .set(field(Batch::getPurchasedQuantity), purchasedQuantity)
-        .set(field(Batch::getEta), eta)
-        .ignore(field(Batch::getAllocations))
-        .create();
-  }
 
   @BeforeEach
   public void setUp() {
@@ -55,17 +35,18 @@ class AllocationTestIT {
 
   @Test
   void shouldReturn200StatusCodeAndExpectedResponseBodyWhenGettingBatchAllocation() {
+    var reference = RandomRefs.randomBatchRef(1);
     var sku = RandomRefs.randomSku();
 
-    addStock(List.of(createBatch("batch-001", sku, 100, null)));
+    postToAddBatch(reference, sku, 100, null);
 
     // spotless:off
     webClient
         .get()
-        .uri("/batch/{batch_reference}", "batch-001").exchange()
+        .uri("/batch/{batch_reference}", reference).exchange()
         .expectStatus().isOk()
         .expectBody()
-            .jsonPath("$.reference").isEqualTo("batch-001")
+            .jsonPath("$.reference").isEqualTo(reference)
             .jsonPath("$.sku").isEqualTo(sku);
     // spotless:on
   }
@@ -147,10 +128,6 @@ class AllocationTestIT {
 
   WebTestClient.ResponseSpec getAllocation(String orderId) {
     return webClient.get().uri("/allocations/" + orderId).exchange();
-  }
-
-  void addStock(List<Batch> batch) {
-    this.batchRepository.saveAll(Flux.fromIterable(batch)).blockLast();
   }
 
   void postToAddBatch(String ref, String sku, int qty, OffsetDateTime eta) {

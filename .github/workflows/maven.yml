@@ -1,4 +1,4 @@
-name: pr-verify
+name: Cellardoor
 
 on:
   pull_request:
