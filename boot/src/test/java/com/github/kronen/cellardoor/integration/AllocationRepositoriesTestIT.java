@@ -41,35 +41,34 @@ class AllocationRepositoriesTestIT {
   @Autowired
   BatchRepository batchRepository;
 
-  private static OrderLine buildOrderLine(String sku, Integer quantity, String orderId) {
+  OrderLine buildOrderLine(String sku, Integer quantity, String orderId) {
     return OrderLine.builder().orderId(orderId).sku(sku).quantity(quantity).build();
   }
 
   OrderLine insertOrderLine(String sku, Integer quantity, String orderId) {
-    OrderLine orderLine =
-        OrderLine.builder().orderId(orderId).sku(sku).quantity(quantity).build();
-
-    return orderLineRepository.save(orderLine).block();
+    return orderLineRepository.save(buildOrderLine(sku, quantity, orderId)).block();
   }
 
   Batch insertBatch(String reference, String sku, Set<OrderLine> orderLines) {
-    Batch batch = Batch.builder()
-        .reference(reference)
-        .sku(sku)
-        .allocations(orderLines)
-        .purchasedQuantity(12)
-        .build();
-    return this.batchRepository.save(batch).block();
+    return this.batchRepository
+        .save(Batch.builder()
+            .reference(reference)
+            .sku(sku)
+            .allocations(orderLines)
+            .purchasedQuantity(12)
+            .build())
+        .block();
   }
 
   @Test
   void testWhenInsert3Then3AreExpected() {
-    StepVerifier.create(orderLineRepository
-            .deleteAll()
-            .thenMany(orderLineRepository.saveAll(Flux.just(
-                buildOrderLine("GENERIC-SOFA", 12, "order1"),
-                buildOrderLine("RED-TABLE", 13, "order1"),
-                buildOrderLine("GENERIC-SOFA", 14, "order2")))))
+    orderLineRepository
+        .deleteAll()
+        .thenMany(orderLineRepository.saveAll(Flux.just(
+            buildOrderLine("GENERIC-SOFA", 12, "order1"),
+            buildOrderLine("RED-TABLE", 13, "order1"),
+            buildOrderLine("GENERIC-SOFA", 14, "order2"))))
+        .as(StepVerifier::create)
         .expectNextCount(3)
         .verifyComplete();
   }
@@ -78,10 +77,9 @@ class AllocationRepositoriesTestIT {
   void testWhenDeleteAllThenNoOrderLinesExpected() {
     insertOrderLine("GENERIC-SOFA", 12, "order1");
 
-    orderLineRepository.deleteAll().as(StepVerifier::create).verifyComplete();
-
     orderLineRepository
-        .findAll()
+        .deleteAll()
+        .thenMany(orderLineRepository.findAll())
         .as(StepVerifier::create)
         .expectNextCount(0)
         .verifyComplete();
@@ -89,14 +87,12 @@ class AllocationRepositoriesTestIT {
 
   @Test
   void testOrderLineRepositoryCanSaveALine() {
-    OrderLine orderLine = OrderLine.builder()
-        .orderId("order1")
-        .sku("RED-CHAIR")
-        .quantity(12)
-        .build();
-
     orderLineRepository
-        .save(orderLine)
+        .save(OrderLine.builder()
+            .orderId("order1")
+            .sku("RED-CHAIR")
+            .quantity(12)
+            .build())
         .as(StepVerifier::create)
         .assertNext(savedLine -> assertThat(savedLine.getId()).isNotNull())
         .verifyComplete();
@@ -104,7 +100,7 @@ class AllocationRepositoriesTestIT {
 
   @Test
   void testBatchRepositoryCanSaveABatch() {
-    Batch batch = Batch.builder()
+    var batch = Batch.builder()
         .reference("batch1")
         .sku("RUSTY-SOAPDISH")
         .purchasedQuantity(100)
@@ -125,11 +121,12 @@ class AllocationRepositoriesTestIT {
 
   @Test
   void testRepositoryCanRetrieveABatchWithAllocations() {
-    OrderLine orderLine = insertOrderLine("GENERIC-SOFA", 12, "order1");
-    Batch expectedBatch = insertBatch("batch1", "GENERIC-SOFA", Set.of(orderLine));
+    var batchRef = "batch1";
+    var orderLine = insertOrderLine("GENERIC-SOFA", 12, "order1");
+    var expectedBatch = insertBatch(batchRef, "GENERIC-SOFA", Set.of(orderLine));
 
     batchRepository
-        .findByReference("batch1")
+        .findByReference(batchRef)
         .as(StepVerifier::create)
         .assertNext(savedBatch -> {
           assertThat(savedBatch).isEqualTo(expectedBatch);

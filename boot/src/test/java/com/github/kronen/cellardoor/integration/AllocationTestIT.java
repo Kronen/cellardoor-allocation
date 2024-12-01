@@ -118,7 +118,7 @@ class AllocationTestIT {
     response.expectStatus().isEqualTo(HttpStatus.ACCEPTED);
 
     // Get the allocation and assert the response
-    // FIXME using OrderLine until Allocation object is implemented
+    // FIXME using OrderLine until GET Allocation is implemented
     getAllocation(orderId)
         .expectStatus()
         .isEqualTo(HttpStatus.OK)
