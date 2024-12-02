@@ -3,6 +3,10 @@ info:
   title: Allocation API
   description: API for allocation and batch retrieval
   version: 1.0.0
+  contact:
+    name: Kronen
+    email: kronenr@gmail.com
+    url: https://github.com/Kronen/cellardoor-allocation/issues
 servers:
   - url: http://localhost:8080
 
@@ -11,7 +15,7 @@ tags:
     description: Allocation of order lines
 
 paths:
-  /allocate:
+  /allocations:
     post:
       tags:
         - allocation
@@ -30,12 +34,21 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-        '204':
-          description: Out of stock
-        '400':
-          description: Bad request
-  /batch/{batch_reference}:
+                type: object
+                properties:
+                  reference:
+                    type: string
+                    description: The reference of the allocated batch
+                    example: "batch-123"
+                required:
+                  - reference
+        default:
+          description: Error occurred - see status code and problem object for more information.
+          content:
+            "application/problem+json":
+              schema:
+                $ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
+  /batches/{batch_reference}:
     get:
       tags:
         - allocation
@@ -54,9 +67,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Batch'
-        '404':
-          description: Batch not found
-  /batch:
+        default:
+          description: Error occurred - see status code and problem object for more information.
+          content:
+            "application/problem+json":
+              schema:
+                $ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
+  /batches:
     post:
       tags:
         - allocation
@@ -72,20 +89,31 @@ paths:
       responses:
         '201':
           description: Batch created successfully
-        '400':
-          description: Bad request
+        default:
+          description: Error occurred - see status code and problem object for more information.
+          content:
+            "application/problem+json":
+              schema:
+                $ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
+
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     AllocateRequest:
       type: object
       properties:
-        orderLine:
+        order_line:
           $ref: '#/components/schemas/OrderLine'
     OrderLine:
       type: object
       properties:
-        orderId:
+        order_id:
           type: string
           example: "order123"
         sku:
@@ -96,7 +124,7 @@ components:
           format: int32
           example: 10
       required:
-        - orderId
+        - order_id
         - sku
         - quantity
 
@@ -109,18 +137,18 @@ components:
         sku:
           type: string
           example: "SKU-123"
-        purchasedQuantity:
+        purchased_quantity:
           type: integer
           format: int32
           example: 100
-        eta:
+        arrival_at:
           type: string
           format: date-time
           example: "2025-11-15T12:00:00Z"
       required:
         - reference
         - sku
-        - purchasedQuantity
+        - purchased-quantity
 
     Batch:
       allOf:
@@ -131,3 +159,4 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/OrderLine'
+

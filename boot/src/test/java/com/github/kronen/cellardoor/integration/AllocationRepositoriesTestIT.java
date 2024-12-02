@@ -2,7 +2,7 @@ package com.github.kronen.cellardoor.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
@@ -104,7 +104,7 @@ class AllocationRepositoriesTestIT {
         .reference("batch1")
         .sku("RUSTY-SOAPDISH")
         .purchasedQuantity(100)
-        .eta(OffsetDateTime.now())
+        .eta(Instant.now())
         .build();
 
     this.batchRepository

@@ -1,6 +1,6 @@
 package com.github.kronen.cellardoor.domain.allocation.entity;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,7 @@ import lombok.NonNull;
 public class Batch {
 
   public static final Comparator<Batch> ETA_COMPARATOR =
-      Comparator.comparing(Batch::getEta, Comparator.nullsFirst(OffsetDateTime::compareTo));
+      Comparator.comparing(Batch::getEta, Comparator.nullsFirst(Instant::compareTo));
 
   @NonNull @EqualsAndHashCode.Include
   private String reference;
@@ -32,7 +32,7 @@ public class Batch {
 
   @NonNull private String sku;
 
-  private OffsetDateTime eta;
+  private Instant eta;
 
   public void allocate(OrderLine line) {
     if (canAllocate(line)) {

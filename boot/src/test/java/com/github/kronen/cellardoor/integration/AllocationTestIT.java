@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 
 import com.github.kronen.cellardoor.RandomRefs;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
+import com.github.kronen.cellardoor.dto.Allocate200ResponseDTO;
 import com.github.kronen.cellardoor.dto.AllocateRequestDTO;
 import com.github.kronen.cellardoor.dto.NewBatchDTO;
 
@@ -43,7 +44,7 @@ class AllocationTestIT {
     // spotless:off
     webClient
         .get()
-        .uri("/batch/{batch_reference}", reference).exchange()
+        .uri("/batches/{batch_reference}", reference).exchange()
         .expectStatus().isOk()
         .expectBody()
             .jsonPath("$.reference").isEqualTo(reference)
@@ -69,11 +70,13 @@ class AllocationTestIT {
     // Send allocation request
     var response = this.postToAllocate(orderId, sku, 3);
 
-    // spotless:off
-    response
-        .expectStatus().isEqualTo(HttpStatus.CREATED)
-        .expectBody(String.class).isEqualTo(earlyBatch);
-    // spotless:on
+    response.expectStatus()
+        .isEqualTo(HttpStatus.CREATED)
+        .expectBody(Allocate200ResponseDTO.class)
+        .consumeWith(dto -> assertThat(dto.getResponseBody())
+            .isNotNull()
+            .extracting(Allocate200ResponseDTO::getReference)
+            .isEqualTo(earlyBatch));
   }
 
   @Test
@@ -133,12 +136,12 @@ class AllocationTestIT {
   void postToAddBatch(String ref, String sku, int qty, OffsetDateTime eta) {
     webClient
         .post()
-        .uri("/batch")
+        .uri("/batches")
         .bodyValue(new NewBatchDTO()
             .reference(ref)
             .sku(sku)
             .purchasedQuantity(qty)
-            .eta(eta))
+            .arrivalAt(eta))
         .exchange()
         .expectStatus()
         .isCreated();
@@ -147,7 +150,7 @@ class AllocationTestIT {
   WebTestClient.ResponseSpec postToAllocate(String orderid, String sku, int qty) {
     return webClient
         .post()
-        .uri("/allocate")
+        .uri("/allocations")
         .bodyValue(new AllocateRequestDTO()
             .orderLine(OrderLine.builder()
                 .orderId(orderid)
