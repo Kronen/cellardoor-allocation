@@ -2,8 +2,8 @@ package com.github.kronen.cellardoor.domain.allocation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.Duration;
+import java.time.Instant;
 
 import com.github.kronen.cellardoor.common.exceptions.OutOfStockException;
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
@@ -25,7 +25,7 @@ class DomainAllocationServiceTest {
         .reference("batch-001")
         .sku(sku)
         .purchasedQuantity(batchQty)
-        .eta(OffsetDateTime.now())
+        .eta(Instant.now())
         .build();
     OrderLine line = OrderLine.builder()
         .orderId("order-123")
@@ -125,7 +125,7 @@ class DomainAllocationServiceTest {
         .reference("shipment-batch")
         .sku("RETRO-CLOCK")
         .purchasedQuantity(100)
-        .eta(OffsetDateTime.now(ZoneOffset.UTC))
+        .eta(Instant.now())
         .build();
 
     OrderLine line = OrderLine.builder()
@@ -148,19 +148,19 @@ class DomainAllocationServiceTest {
         .reference("warehouse-batch")
         .sku("MINIMALIST-SPOON")
         .purchasedQuantity(100)
-        .eta(OffsetDateTime.now(ZoneOffset.UTC))
+        .eta(Instant.now())
         .build();
     Batch mediumBatch = Batch.builder()
         .reference("warehouse-batch")
         .sku("MINIMALIST-SPOON")
         .purchasedQuantity(100)
-        .eta(OffsetDateTime.now(ZoneOffset.UTC).plusDays(1))
+        .eta(Instant.now().plus(Duration.ofDays(1)))
         .build();
     Batch latestBatch = Batch.builder()
         .reference("warehouse-batch")
         .sku("MINIMALIST-SPOON")
         .purchasedQuantity(100)
-        .eta(OffsetDateTime.now(ZoneOffset.UTC).plusDays(10))
+        .eta(Instant.now().plus(Duration.ofDays(1)))
         .build();
     OrderLine line = OrderLine.builder()
         .orderId("order1")
@@ -206,7 +206,7 @@ class DomainAllocationServiceTest {
         .reference("batch1")
         .sku("SMALL-FORK")
         .purchasedQuantity(10)
-        .eta(OffsetDateTime.now())
+        .eta(Instant.now())
         .build();
     OrderLine line1 = OrderLine.builder()
         .orderId("order1")

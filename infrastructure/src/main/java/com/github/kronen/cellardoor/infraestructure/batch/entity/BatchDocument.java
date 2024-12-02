@@ -1,6 +1,6 @@
 package com.github.kronen.cellardoor.infraestructure.batch.entity;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +30,7 @@ public class BatchDocument {
   @Field("purchased_quantity")
   private Integer purchasedQuantity;
 
-  private OffsetDateTime eta;
+  private Instant eta;
 
   @JsonProperty(defaultValue = "[]")
   private Set<OrderLine> allocations = new HashSet<>();
