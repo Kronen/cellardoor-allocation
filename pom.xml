@@ -23,6 +23,12 @@
     <module>application</module>
   </modules>
 
+  <scm>
+    <connection>scm:git:git@github.com/Kronen/cellardoor-allocation.git</connection>
+    <developerConnection>scm:git:git@github.com/Kronen/cellardoor-allocation.git</developerConnection>
+    <url>https://github.com/Kronen/cellardoor-allocation</url>
+  </scm>
+
   <properties>
     <openapi-generator.version>7.10.0</openapi-generator.version>
   </properties>
