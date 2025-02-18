@@ -17,7 +17,7 @@
 
   <modules>
     <module>boot</module>
-    <module>api-rest</module>
+    <module>api</module>
     <module>infrastructure</module>
     <module>domain</module>
     <module>application</module>

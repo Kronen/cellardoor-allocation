@@ -10,7 +10,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>api-rest</artifactId>
+  <artifactId>api</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>API REST layer for Cellardoor Allocation</description>
@@ -37,7 +37,6 @@
       <artifactId>swagger-annotations</artifactId>
     </dependency>
   </dependencies>
-
 
   <build>
     <plugins>
