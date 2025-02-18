@@ -36,7 +36,7 @@ public class AllocationController implements AllocationApi {
         .allocate(allocateRequestDto.map(mapper::toDomain).map(AllocateRequest::getOrderLine))
         .switchIfEmpty(Mono.error(new IllegalStateException("Allocation failed: no reference produced")))
         .doOnNext(batchRef -> log.info("Allocated reference: {}", batchRef))
-        .map(batchRef -> ResponseEntity.created(URI.create("allocation/" + batchRef))
+        .map(batchRef -> ResponseEntity.created(URI.create("/allocation/" + batchRef))
             .body(new Allocate200ResponseDTO().reference(batchRef)));
   }
 
@@ -45,7 +45,7 @@ public class AllocationController implements AllocationApi {
     return newBatchDTO
         .map(mapper::toDomain)
         .flatMap(allocateUseCase::createBatch)
-        .map(batch -> ResponseEntity.created(URI.create("batch/" + batch.getReference()))
+        .map(batch -> ResponseEntity.created(URI.create("/batch/" + batch.getReference()))
             .build());
   }
 
