@@ -10,11 +10,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>api</artifactId>
+  <artifactId>rest</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>API REST layer for Cellardoor Allocation</description>
-
 
   <dependencies>
     <dependency>
@@ -50,6 +49,9 @@
               <goal>generate</goal>
             </goals>
             <configuration>
+              <apiPackage>${project.groupId}.${project.artifactId}.api</apiPackage>
+              <modelPackage>${project.groupId}.${project.artifactId}.dto</modelPackage>
+              <invokerPackage>${project.groupId}.${project.artifactId}.invoker</invokerPackage>
               <schemaMappings>
                 Batch=com.github.kronen.cellardoor.domain.allocation.entity.Batch,
                 OrderLine=com.github.kronen.cellardoor.domain.allocation.entity.OrderLine

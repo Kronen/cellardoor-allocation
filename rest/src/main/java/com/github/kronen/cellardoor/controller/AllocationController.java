@@ -2,13 +2,13 @@ package com.github.kronen.cellardoor.controller;
 
 import java.net.URI;
 
-import com.github.kronen.cellardoor.api.AllocationApi;
+import com.github.kronen.rest.api.AllocationApi;
 import com.github.kronen.cellardoor.domain.allocation.entity.AllocateRequest;
 import com.github.kronen.cellardoor.domain.allocation.entity.Batch;
 import com.github.kronen.cellardoor.domain.allocation.usecase.AllocateUseCase;
-import com.github.kronen.cellardoor.dto.Allocate200ResponseDTO;
-import com.github.kronen.cellardoor.dto.AllocateRequestDTO;
-import com.github.kronen.cellardoor.dto.NewBatchDTO;
+import com.github.kronen.rest.dto.Allocate200ResponseDTO;
+import com.github.kronen.rest.dto.AllocateRequestDTO;
+import com.github.kronen.rest.dto.NewBatchDTO;
 import com.github.kronen.cellardoor.mapper.AllocationMapper;
 
 import jakarta.validation.Valid;
