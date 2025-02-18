@@ -18,7 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>com.github.kronen</groupId>
-      <artifactId>api-rest</artifactId>
+      <artifactId>rest</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

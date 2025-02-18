@@ -10,7 +10,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>api-rest</artifactId>
+  <artifactId>rest</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>API REST layer for Cellardoor Allocation</description>
@@ -37,13 +37,11 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <plugins>
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>${openapi-generator.version}</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -51,31 +49,12 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>
-                ${project.basedir}/src/main/resources/openapi.yaml
-              </inputSpec>
-              <generatorName>spring</generatorName>
-              <apiPackage>com.github.kronen.cellardoor.api</apiPackage>
-              <modelPackage>com.github.kronen.cellardoor.dto</modelPackage>
-              <invokerPackage>com.github.kronen.cellardoor.invoker</invokerPackage>
-              <configOptions>
-                <groupId>com.github.kronen</groupId>
-                <artifactId>cellardoor-allocation</artifactId>
-                <openApiNullable>false</openApiNullable>
-                <performBeanValidation>true</performBeanValidation>
-                <library>spring-boot</library>
-                <useSpringBoot3>true</useSpringBoot3>
-                <reactive>true</reactive>
-                <interfaceOnly>true</interfaceOnly>
-                <dateLibrary>java8</dateLibrary>
-                <useSpringController>false</useSpringController>
-                <documentationProvider>springdoc</documentationProvider>
-                <skipDefaultInterface>true</skipDefaultInterface>
-                <useTags>true</useTags>
-              </configOptions>
-              <modelNameSuffix>DTO</modelNameSuffix>
+              <apiPackage>${project.groupId}.${project.artifactId}.api</apiPackage>
+              <modelPackage>${project.groupId}.${project.artifactId}.dto</modelPackage>
+              <invokerPackage>${project.groupId}.${project.artifactId}.invoker</invokerPackage>
               <schemaMappings>
-                Batch=com.github.kronen.cellardoor.domain.allocation.entity.Batch,OrderLine=com.github.kronen.cellardoor.domain.allocation.entity.OrderLine
+                Batch=com.github.kronen.cellardoor.domain.allocation.entity.Batch,
+                OrderLine=com.github.kronen.cellardoor.domain.allocation.entity.OrderLine
               </schemaMappings>
             </configuration>
           </execution>
