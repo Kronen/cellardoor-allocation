@@ -1,0 +1,20 @@
+type: object
+properties:
+  reference:
+    type: string
+    example: batch-123
+  sku:
+    type: string
+    example: SKU-123
+  purchased_quantity:
+    type: integer
+    format: int32
+    example: 100
+  arrival_at:
+    type: string
+    format: date-time
+    example: '2025-11-15T12:00:00Z'
+required:
+  - reference
+  - sku
+  - purchased-quantity
