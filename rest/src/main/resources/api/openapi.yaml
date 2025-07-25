@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: Allocation API
+  description: API for allocation and batch retrieval
+  version: 1.0.0
+  contact:
+    name: Kronen
+    email: kronenr@gmail.com
+    url: https://github.com/Kronen/cellardoor-allocation/issues
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: allocation
+    description: Allocation of order lines
+paths:
+  /allocations:
+    $ref: paths/allocations.yaml
+  /batches/{batch_reference}:
+    $ref: paths/batches_{batch_reference}.yaml
+  /batches:
+    $ref: paths/batches.yaml
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
