@@ -9,7 +9,7 @@ jobs:
   pr-verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Maven
         uses: s4u/setup-maven-action@v1.19.0
