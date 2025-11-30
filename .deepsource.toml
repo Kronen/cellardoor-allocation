@@ -10,4 +10,4 @@ name = "secrets"
 name = "java"
 
   [analyzers.meta]
-  runtime_version = "25"
+  runtime_version = "21"
