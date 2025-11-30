@@ -1,0 +1,24 @@
+post:
+  tags:
+    - allocation
+  summary: Create a batch for allocation
+  operationId: createBatch
+  requestBody:
+    description: The new batch to be created
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/NewBatch.yaml
+  responses:
+    '201':
+      description: Batch created successfully
+    default:
+      description: >-
+        Error occurred - see status code and problem object for more
+        information.
+      content:
+        application/problem+json:
+          schema:
+            $ref: >-
+              https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem

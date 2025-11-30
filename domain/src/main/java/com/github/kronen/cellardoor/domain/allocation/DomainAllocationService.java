@@ -18,6 +18,6 @@ public class DomainAllocationService implements AllocationService {
         .next()
         .doOnNext(batch -> batch.allocate(line))
         .switchIfEmpty(
-            Mono.error(new OutOfStockException(line.getSku(), line.getOrderId(), line.getQuantity())));
+            Mono.error(new OutOfStockException(line.sku(), line.orderId(), line.quantity())));
   }
 }
