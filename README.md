@@ -1,4 +1,5 @@
 # Cellardoor Allocation
+**Note:** This is a hobby project and not intended for real-world production use.
 
 Inventory allocation system for managing batches and order lines.
 
