@@ -1,4 +1,4 @@
-name: Build and Test
+name: Cellardoor
 on:
   push:
     branches:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
     permissions:
       contents: read
