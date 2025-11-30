@@ -52,4 +52,4 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build project
-        run: mvn -B -Punix verify
+        run: mvn -B --update-snapshots -Punix verify
