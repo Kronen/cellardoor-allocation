@@ -1,7 +1,5 @@
 package com.github.kronen.cellardoor.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.Instant;
 import java.util.Set;
 
@@ -14,9 +12,10 @@ import com.github.kronen.cellardoor.infraestructure.config.mongo.MongoConfig;
 import com.github.kronen.cellardoor.infraestructure.orderline.mapper.OrderLineMapperImpl;
 import com.github.kronen.cellardoor.infraestructure.orderline.repository.OrderLineRepositoryImpl;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.data.mongodb.test.autoconfigure.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import reactor.core.publisher.Flux;
@@ -94,7 +93,7 @@ class AllocationRepositoriesTestIT {
             .quantity(12)
             .build())
         .as(StepVerifier::create)
-        .assertNext(savedLine -> assertThat(savedLine.getId()).isNotNull())
+        .assertNext(savedLine -> Assertions.assertThat(savedLine.id()).isNotNull())
         .verifyComplete();
   }
 
@@ -111,10 +110,10 @@ class AllocationRepositoriesTestIT {
         .save(batch)
         .as(StepVerifier::create)
         .assertNext(savedBatch -> {
-          assertThat(savedBatch).isEqualTo(batch); // Only compares reference
-          assertThat(savedBatch.getSku()).isEqualTo(batch.getSku());
-          assertThat(savedBatch.getPurchasedQuantity()).isEqualTo(batch.getPurchasedQuantity());
-          assertThat(savedBatch.getEta()).isEqualTo(batch.getEta());
+          Assertions.assertThat(savedBatch).isEqualTo(batch); // Only compares reference
+          Assertions.assertThat(savedBatch.getSku()).isEqualTo(batch.getSku());
+          Assertions.assertThat(savedBatch.getPurchasedQuantity()).isEqualTo(batch.getPurchasedQuantity());
+          Assertions.assertThat(savedBatch.getEta()).isEqualTo(batch.getEta());
         })
         .verifyComplete();
   }
@@ -129,8 +128,8 @@ class AllocationRepositoriesTestIT {
         .findByReference(batchRef)
         .as(StepVerifier::create)
         .assertNext(savedBatch -> {
-          assertThat(savedBatch).isEqualTo(expectedBatch);
-          assertThat(savedBatch.getAllocations()).contains(orderLine);
+          Assertions.assertThat(savedBatch).isEqualTo(expectedBatch);
+          Assertions.assertThat(savedBatch.getAllocations()).contains(orderLine);
         })
         .verifyComplete();
   }

@@ -17,8 +17,8 @@ jobs:
       - name: Setup Java andMaven
         uses: s4u/setup-maven-action@v1.18.0
         with:
-          java-version: 21
-          maven-version: 3.9.9
+          java-version: 25
+          maven-version: 3.9.11
           settings-servers: |
             [{
               "id": "github",
