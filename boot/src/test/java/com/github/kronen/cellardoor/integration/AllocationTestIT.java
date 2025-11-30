@@ -1,9 +1,11 @@
 package com.github.kronen.cellardoor.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.MediaType.*;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 import com.github.kronen.cellardoor.RandomRefs;
 import com.github.kronen.cellardoor.domain.allocation.entity.OrderLine;
@@ -73,10 +75,12 @@ class AllocationTestIT {
     response.expectStatus()
         .isEqualTo(HttpStatus.CREATED)
         .expectBody(Allocate200ResponseDTO.class)
-        .consumeWith(dto -> assertThat(dto.getResponseBody())
-            .isNotNull()
-            .extracting(Allocate200ResponseDTO::getReference)
-            .isEqualTo(earlyBatch));
+      .consumeWith(dto -> {
+        Allocate200ResponseDTO body = dto.getResponseBody();
+        assertThat(body).isNotNull();
+        assertThat(body.getReference()).isEqualTo(earlyBatch);
+      });
+
   }
 
   @Test
@@ -84,22 +88,17 @@ class AllocationTestIT {
     var unknownSku = RandomRefs.randomSku("unknown");
     var orderId = RandomRefs.randomOrderId();
 
-    // Send allocation request
-    var response = this.postToAllocate(orderId, unknownSku, 3);
-
-    response.expectStatus()
-        .isEqualTo(HttpStatus.BAD_REQUEST)
-        .expectBody(ProblemDetail.class)
-        .consumeWith(problemDetail -> {
-          var pd = problemDetail.getResponseBody();
-          assertThat(pd).isNotNull();
-          assertThat(pd.getType()).isEqualTo(URI.create("/errors/invalid-sku"));
-          assertThat(pd.getTitle()).isEqualTo("Invalid sku");
-          assertThat(pd.getDetail()).isEqualTo("Invalid sku: " + unknownSku);
-          assertThat(pd.getInstance()).isEqualTo(URI.create("/allocate?sku=" + unknownSku));
-          assertThat(pd.getProperties()).isNotNull().hasFieldOrPropertyWithValue("sku", unknownSku);
-        });
+    this.postToAllocate(orderId, unknownSku, 3)
+      .expectStatus().isBadRequest()
+      .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+      .expectBody()
+      .jsonPath("$.type").isEqualTo("/errors/invalid-sku")
+      .jsonPath("$.title").isEqualTo("Invalid sku")
+      .jsonPath("$.detail").isEqualTo("Invalid sku: " + unknownSku)
+      .jsonPath("$.instance").isEqualTo("/allocate?sku=" + unknownSku)
+      .jsonPath("$.sku").isEqualTo(unknownSku);
   }
+
 
   @Disabled
   @Test
@@ -151,6 +150,7 @@ class AllocationTestIT {
     return webClient
         .post()
         .uri("/allocations")
+        .accept(APPLICATION_PROBLEM_JSON)
         .bodyValue(new AllocateRequestDTO()
             .orderLine(OrderLine.builder()
                 .orderId(orderid)
@@ -159,4 +159,13 @@ class AllocationTestIT {
                 .build()))
         .exchange();
   }
+
+  public record ProblemDetailDto(
+    URI type,
+    String title,
+    String detail,
+    URI instance,
+    Map<String, Object> properties
+  ) {}
+
 }

@@ -89,3 +89,4 @@ boot/log.json*
 log.json
 .codiumai
 *.gz
+rest/src/main/resources/openapi.yaml

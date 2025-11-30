@@ -45,7 +45,7 @@ public class Batch {
   }
 
   public Integer allocatedQuantity() {
-    return this.allocations.stream().map(OrderLine::getQuantity).reduce(0, Integer::sum);
+    return this.allocations.stream().map(OrderLine::quantity).reduce(0, Integer::sum);
   }
 
   public Integer availableQuantity() {
@@ -53,6 +53,6 @@ public class Batch {
   }
 
   public boolean canAllocate(OrderLine line) {
-    return sku.equals(line.getSku()) && availableQuantity() >= line.getQuantity();
+    return sku.equals(line.sku()) && availableQuantity() >= line.quantity();
   }
 }
