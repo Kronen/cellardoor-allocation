@@ -2,7 +2,7 @@ name: cellardoor-allocation
 
 services:
   mongodb:
-    image: mongo:8.2.2
+    image: mongo:8.2.3
     container_name: mongodb
     restart: always
     environment:
